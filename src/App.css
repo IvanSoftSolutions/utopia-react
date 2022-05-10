@@ -1,5 +1,10 @@
 .App {
   text-align: center;
+  background-color: #282c34;
+}
+
+button {
+  margin: 5px;
 }
 
 .App-logo {
@@ -24,6 +29,10 @@
   color: white;
 }
 
+.App-header table {
+  margin-bottom: 20px;
+}
+
 .App-link {
   color: #61dafb;
 }
@@ -32,6 +41,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

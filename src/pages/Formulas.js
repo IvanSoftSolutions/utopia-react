@@ -8,81 +8,139 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/Inbox';
-import DraftsIcon from '@mui/icons-material/Drafts';
+import TextField from '@mui/material/TextField';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Button from '@mui/material/Button';
+// import { DataGrid } from '@mui/x-data-grid';
 
-function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
+import FormulasService from '../services/FormulasService';
 
 export default function Formulas() {
+    const [article, setArticle] = React.useState('');
+    const [color, setColor] = React.useState('');
+    const [rows, setRows] = React.useState([]);
+
+    // const columns = [
+    //     { field: 'id', headerName: 'ID', width: 70 },
+    //     { field: 'firstName', headerName: 'First name', width: 130 },
+    //     { field: 'lastName', headerName: 'Last name', width: 130 },
+    //     { field: 'pName', headerName: 'pName', width: 70 },
+    //     { field: 'temp', headerName: 'temp', width: 130 },
+    //     { field: 'dillution', headerName: 'dillution', width: 130 },
+    //     { field: 'ph', headerName: 'ph', width: 70 },
+    //     { field: 'cut', headerName: 'cut', width: 130 },
+    //     { field: 'time', headerName: 'time', width: 130 }
+    // ]
+
+    // useEffect((article, color) => {
+    //     getFormula(article + '_' + color);
+    // }, [])
+
+    // function createData(id, percentage, pName, temp, dillution, time, ph, cut, observations) {
+    //     return { id, percentage, pName, temp, dillution, time, ph, cut, observations };
+    // }
+
+    function getFormula(f_name) {
+        FormulasService.getFormula(f_name).then(response => {
+            if (response.status === 200) {
+                console.log(response.data);
+                setRows(response.data);
+                // response.data.map((r) => {
+                //     console.log(r);
+
+                // });
+                console.log(rows);
+            }
+        });
+    }
+
+    const handleArticleChange = (event) => {
+        setArticle(event.target.value);
+    };
+
+    const handleColorChange = (event) => {
+        setColor(event.target.value);
+    };
+
     return (
         <>
             <div className="formula-input" style={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                 <List>
                     <ListItem disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <InboxIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Inbox" />
-                        </ListItemButton>
+                        <TextField required id="outlined-basic" label="Date" variant="outlined" />
                     </ListItem>
                     <ListItem disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                <DraftsIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Drafts" />
-                        </ListItemButton>
+                        <FormControl required style={{ width: '58.5%' }}>
+                            <InputLabel id="demo-simple-select-label">Article</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={article}
+                                label="Article"
+                                onChange={handleArticleChange}
+                            >
+                                <MenuItem value={'Diva'}>Diva</MenuItem>
+                            </Select>
+                        </FormControl>
                     </ListItem>
                     <ListItem disablePadding>
-                        <ListItemButton>
-                            <ListItemText primary="Trash" />
-                        </ListItemButton>
+                        <FormControl required style={{ width: '58.5%' }}>
+                            <InputLabel id="demo-simple-select-label">Color</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={color}
+                                label="Color"
+                                onChange={handleColorChange}
+                            >
+                                <MenuItem value={'Black'}>Black</MenuItem>
+                            </Select>
+                        </FormControl>
                     </ListItem>
                     <ListItem disablePadding>
-                        <ListItemButton component="a" href="#simple-list">
-                            <ListItemText primary="Spam" />
-                        </ListItemButton>
+                        <TextField required id="outlined-basic" label="Weight" variant="outlined" />
+                    </ListItem>
+                    <ListItem disablePadding>
+                        <TextField required id="outlined-basic" label="Thickness" variant="outlined" />
+                    </ListItem>
+                    <ListItem disablePadding>
+                        <TextField required id="outlined-basic" label="Material" variant="outlined" />
                     </ListItem>
                 </List>
+                <Button variant="text" onClick={() => { getFormula(article + '_' + color) }}>OK</Button>
             </div>
+            {/* <DataGrid rows={rows} columns={columns} /> */}
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Dessert (100g serving)</TableCell>
-                            <TableCell align="right">Calories</TableCell>
-                            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+                            <TableCell></TableCell>
+                            <TableCell>%</TableCell>
+                            <TableCell>QTY</TableCell>
+                            <TableCell>Product</TableCell>
+                            <TableCell>Temp</TableCell>
+                            <TableCell>Time</TableCell>
+                            <TableCell>pH</TableCell>
+                            <TableCell>#Cut</TableCell>
+                            <TableCell>Observations</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {rows.map((row) => (
                             <TableRow
-                                key={row.name}
+                                key={row.id}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row">
-                                    {row.name}
+                                    {row.id}
                                 </TableCell>
-                                <TableCell align="right">{row.calories}</TableCell>
-                                <TableCell align="right">{row.fat}</TableCell>
-                                <TableCell align="right">{row.carbs}</TableCell>
-                                <TableCell align="right">{row.protein}</TableCell>
+                                <TableCell>{row.percentage}</TableCell>
+                                <TableCell>0</TableCell>
+                                <TableCell>{row.pName}</TableCell>
+                                <TableCell>{row.temp}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

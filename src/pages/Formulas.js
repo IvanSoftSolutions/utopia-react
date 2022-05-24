@@ -14,45 +14,33 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
-// import { DataGrid } from '@mui/x-data-grid';
 
 import FormulasService from '../services/FormulasService';
 
 export default function Formulas() {
     const [article, setArticle] = React.useState('');
     const [color, setColor] = React.useState('');
+    const [weight, setWeight] = React.useState(0);
+    const [thickness, setThickness] = React.useState('');
+    const [material, setMaterial] = React.useState('');
+    const [details, setDetails] = React.useState('');
     const [rows, setRows] = React.useState([]);
-
-    // const columns = [
-    //     { field: 'id', headerName: 'ID', width: 70 },
-    //     { field: 'firstName', headerName: 'First name', width: 130 },
-    //     { field: 'lastName', headerName: 'Last name', width: 130 },
-    //     { field: 'pName', headerName: 'pName', width: 70 },
-    //     { field: 'temp', headerName: 'temp', width: 130 },
-    //     { field: 'dillution', headerName: 'dillution', width: 130 },
-    //     { field: 'ph', headerName: 'ph', width: 70 },
-    //     { field: 'cut', headerName: 'cut', width: 130 },
-    //     { field: 'time', headerName: 'time', width: 130 }
-    // ]
-
-    // useEffect((article, color) => {
-    //     getFormula(article + '_' + color);
-    // }, [])
-
-    // function createData(id, percentage, pName, temp, dillution, time, ph, cut, observations) {
-    //     return { id, percentage, pName, temp, dillution, time, ph, cut, observations };
-    // }
+    const [alert, setAlert] = React.useState(false);
+    let ingredientsTotal = {};
 
     function getFormula(f_name) {
         FormulasService.getFormula(f_name).then(response => {
             if (response.status === 200) {
                 console.log(response.data);
                 setRows(response.data);
-                // response.data.map((r) => {
-                //     console.log(r);
-
-                // });
-                console.log(rows);
+                response.data.map((row) => {
+                    if (ingredientsTotal[row.pName]) {
+                        ingredientsTotal[row.pName] = ingredientsTotal[row.pName] + ((weight) * (row.percentage)) / 100;
+                    } else {
+                        ingredientsTotal[row.pName] = ((weight) * (row.percentage)) / 100;
+                    }
+                })
+                console.log(ingredientsTotal);
             }
         });
     }
@@ -65,15 +53,29 @@ export default function Formulas() {
         setColor(event.target.value);
     };
 
+    const handleWeightChange = (event) => {
+        setWeight(event.target.value);
+    };
+
+    const handleThicknessChange = (event) => {
+        setThickness(event.target.value);
+    };
+
+    const handleMaterialChange = (event) => {
+        setMaterial(event.target.value);
+    };
+
+    const handleDetailsChange = (event) => {
+        setDetails(event.target.value);
+    };
+
+
     return (
         <>
             <div className="formula-input" style={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                 <List>
                     <ListItem disablePadding>
-                        <TextField required id="outlined-basic" label="Date" variant="outlined" />
-                    </ListItem>
-                    <ListItem disablePadding>
-                        <FormControl required style={{ width: '58.5%' }}>
+                        <FormControl required style={{ width: '58.5%', marginTop: '4px', marginBottom: '4px' }}>
                             <InputLabel id="demo-simple-select-label">Article</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -87,7 +89,7 @@ export default function Formulas() {
                         </FormControl>
                     </ListItem>
                     <ListItem disablePadding>
-                        <FormControl required style={{ width: '58.5%' }}>
+                        <FormControl required style={{ width: '58.5%', marginTop: '4px', marginBottom: '4px' }}>
                             <InputLabel id="demo-simple-select-label">Color</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -101,23 +103,31 @@ export default function Formulas() {
                         </FormControl>
                     </ListItem>
                     <ListItem disablePadding>
-                        <TextField required id="outlined-basic" label="Weight" variant="outlined" />
+                        <TextField required id="outlined-basic" label="Weight" onChange={handleWeightChange} variant="outlined" margin='dense' />
                     </ListItem>
                     <ListItem disablePadding>
-                        <TextField required id="outlined-basic" label="Thickness" variant="outlined" />
+                        <TextField required id="outlined-basic" label="Thickness" onChange={handleThicknessChange} variant="outlined" margin='dense' />
                     </ListItem>
                     <ListItem disablePadding>
-                        <TextField required id="outlined-basic" label="Material" variant="outlined" />
+                        <TextField required id="outlined-basic" label="Material" onChange={handleMaterialChange} variant="outlined" margin='dense' />
+                    </ListItem>
+                    <ListItem disablePadding>
+                        <TextField id="outlined-basic" label="Details" onChange={handleDetailsChange} variant="outlined" margin='dense' />
                     </ListItem>
                 </List>
-                <Button variant="text" onClick={() => { getFormula(article + '_' + color) }}>OK</Button>
             </div>
-            {/* <DataGrid rows={rows} columns={columns} /> */}
+            <div>
+                <Button variant="text" onClick={() => {
+                    getFormula(article + '_' + color)
+                }}>Buscar</Button>
+                {/* <Button variant='text' onClick={() => {
+                    sendLog(rows.formula_id, article, color, weight, thickness, material, details);
+                }} >Aceptar</Button> */}
+            </div>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell></TableCell>
                             <TableCell>%</TableCell>
                             <TableCell>QTY</TableCell>
                             <TableCell>Product</TableCell>
@@ -134,19 +144,19 @@ export default function Formulas() {
                                 key={row.id}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell component="th" scope="row">
-                                    {row.id}
-                                </TableCell>
                                 <TableCell>{row.percentage}</TableCell>
-                                <TableCell>0</TableCell>
+                                <TableCell>{((weight) * (row.percentage)) / 100}</TableCell>
                                 <TableCell>{row.pName}</TableCell>
                                 <TableCell>{row.temp}</TableCell>
+                                <TableCell>{row.time}</TableCell>
+                                <TableCell>{row.ph}</TableCell>
+                                <TableCell>{row.cut}</TableCell>
+                                <TableCell>{row.observations}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
         </>
-
     )
 }

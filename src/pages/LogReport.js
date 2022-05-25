@@ -44,10 +44,10 @@ export default function LogReport() {
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
                             <TableCell component="th" scope="row">
-                                {row.userId}
+                                {row.uName}
                             </TableCell>
                             <TableCell>{row.date}</TableCell>
-                            <TableCell>{row.formulaId}</TableCell>
+                            <TableCell>{row.fName}</TableCell>
                             <TableCell>{row.weight}</TableCell>
                             <TableCell>{row.thickness}</TableCell>
                             <TableCell>{row.material}</TableCell>

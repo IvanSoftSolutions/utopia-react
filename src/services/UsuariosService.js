@@ -22,7 +22,7 @@ class UserServices {
     }
 
     login(data) {
-        return http.post(`/login?Correo=${data.email}&Contrasenia=${data.password}`);
+        return http.post(`/login?UName=${data.uName}&Pass=${data.pass}`);
     }
 }
 

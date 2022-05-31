@@ -13,7 +13,7 @@ import LogService from '../services/LogService';
 export default function LogReport() {
     const [rows, setRows] = useState([]);
 
-    useEffect((rows) => {
+    useEffect(() => {
         LogService.getLogs().then(response => {
             if (response.status === 200) {
                 // console.log(response.data);

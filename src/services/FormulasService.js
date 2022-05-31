@@ -6,7 +6,7 @@ class FormulasServices {
     }
 
     postLog(data) {
-        return http.post("/Formula", data)
+        return http.post("/Formula", data);
     }
 }
 

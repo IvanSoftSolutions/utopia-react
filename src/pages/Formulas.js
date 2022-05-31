@@ -20,10 +20,11 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
 
 import FormulasService from '../services/FormulasService';
 import UserServices from '../services/UsuariosService';
+import InOutService from '../services/InOutService';
+import StockService from '../services/StockService';
 
 export default function Formulas() {
     const [article, setArticle] = React.useState('');
@@ -39,8 +40,6 @@ export default function Formulas() {
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
 
-    let ingredientsTotal = {};
-
     let userData = {
         uName: user,
         pass: password
@@ -50,7 +49,7 @@ export default function Formulas() {
         UserServices.login(userData).then(response => {
             if (response.status === 200) {
                 let formulaData = {
-                    formulaId: 1,
+                    formulaId: rows[0].formulaId,
                     userId: response.data.id,
                     date: new Date().toLocaleString(),
                     weight: weight,
@@ -58,10 +57,9 @@ export default function Formulas() {
                     material: material,
                     details: details
                 };
-                setSuccess(true);
-                setError(false);
                 postFormula(formulaData);
-                console.log(response.data)
+                postStockChanges()
+                console.log(response.data);
             }
 
         }).catch(function (error) {
@@ -73,9 +71,56 @@ export default function Formulas() {
         })
     }
 
+    function postStockChanges() {
+        let ingredientsTotal = {};
+        rows.map((row) => {
+            if ((row.pName === 'Agua') || (row.pName === 'Drenar')) {
+                return
+            } else if (ingredientsTotal[row.prodId]) {
+                ingredientsTotal[row.prodId] = ingredientsTotal[row.prodId] + ((weight) * (row.percentage)) / 100;
+            } else {
+                ingredientsTotal[row.prodId] = ((weight) * (row.percentage)) / 100;
+            }
+        })
+        console.log(ingredientsTotal);
+        let ingredientIds = Object.keys(ingredientsTotal);
+        ingredientIds.map(i => {
+            let inOutData = {
+                date: new Date().toLocaleString(),
+                prodId: i,
+                qty: Math.round(ingredientsTotal[i]),
+                InOrOut: 'Out'
+            }
+            InOutService.postInOut(inOutData).then(response => {
+                if (response.data === 200) {
+                    console.log(response.data)
+                }
+            }).catch(function (error) {
+                if (error.response) {
+                    console.log(error.response.data)
+                }
+            })
+            let stockData = {
+                id: i,
+                qty: Math.round(ingredientsTotal[i])
+            }
+            StockService.updateStock(stockData).then(response => {
+                if (response.data === 200) {
+                    console.log(response.data)
+                }
+            }).catch(function (error) {
+                if (error.response) {
+                    console.log(error.response.data)
+                }
+            })
+        })
+    }
+
     function postFormula(data) {
         FormulasService.postLog(data).then(response => {
             if (response.status === 200) {
+                setSuccess(true);
+                setError(false);
                 console.log(response.data);
             } else {
                 console.log(response.data);
@@ -88,37 +133,9 @@ export default function Formulas() {
             if (response.status === 200) {
                 console.log(response.data);
                 setRows(response.data);
-                response.data.map((row) => {
-                    if (ingredientsTotal[row.pName]) {
-                        ingredientsTotal[row.pName] = ingredientsTotal[row.pName] + ((weight) * (row.percentage)) / 100;
-                    } else {
-                        ingredientsTotal[row.pName] = ((weight) * (row.percentage)) / 100;
-                    }
-                })
-                console.log(ingredientsTotal);
             }
         });
     }
-
-    // function handleAlert(success, error) {
-    //     if (success === true) {
-    //         return (
-    //             <Alert severity="success">
-    //                 <AlertTitle>Success</AlertTitle>
-    //                 This is a success alert — <strong>check it out!</strong>
-    //             </Alert>
-    //         )
-    //     } else if (error === true) {
-    //         return (
-    //             <Alert severity="error">
-    //                 <AlertTitle>Error</AlertTitle>
-    //                 This is an error alert — <strong>check it out!</strong>
-    //             </Alert>
-    //         )
-    //     } else {
-    //         return
-    //     }
-    // }
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -217,6 +234,7 @@ export default function Formulas() {
                 }}>Buscar</Button>
                 <Button variant='text' onClick={() => {
                     handleClickOpen();
+
                 }} >Aceptar</Button>
                 <Dialog open={open} onClose={handleClose}>
                     <DialogTitle>Subscribe</DialogTitle>

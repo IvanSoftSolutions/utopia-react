@@ -148,6 +148,7 @@ export default function Formulas() {
                 if (stockError === true) {
                     return;
                 } else {
+                    handleDetailsChange()
                     let formulaData = {
                         formulaId: rows[0].formulaId,
                         userId: response.data.id,
@@ -377,7 +378,7 @@ export default function Formulas() {
                         <TextField required id="outlined-basic" label="Material" onChange={handleMaterialChange} variant="outlined" margin='dense' />
                     </ListItem>
                     <ListItem disablePadding>
-                        <TextField id="outlined-basic" label="Details" multiline onChange={handleDetailsChange} variant="outlined" margin='dense' />
+                        <TextField id="outlined-basic" label="Details" multiline variant="outlined" margin='dense' sx={{ width: '100%' }} />
                     </ListItem>
                 </List>
             </div>
@@ -463,22 +464,15 @@ export default function Formulas() {
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell>{row.percentage}</TableCell>
-                                    {(row.prodId === 2) ? <TableCell></TableCell> : (row.prodId !== 99) ? <TableCell>{((weight) * (row.percentage)) / 100}</TableCell> : <TableCell></TableCell>}
+                                    {(row.prodId === 2) ? <TableCell></TableCell> : (row.prodId === 99) ? <TableCell colSpan='6' >{row.observations}</TableCell> : <TableCell>{((weight) * (row.percentage)) / 100}</TableCell>}
                                     <TableCell>{row.pName}</TableCell>
                                     <TableCell>{row.temp}</TableCell>
                                     <TableCell>{row.time}</TableCell>
                                     <TableCell>{row.ph}</TableCell>
                                     <TableCell>{row.cut}</TableCell>
-                                    <TableCell sx={{ minWidth: 650 }}>{rows[rows.length - 1].observations}</TableCell>
-
+                                    {row.prodId === 99 ? <TableCell></TableCell> : <TableCell>{row.observations}</TableCell>}
                                 </TableRow>
                             ))}
-
-                        {emptyRows > 0 && (
-                            <TableRow style={{ height: 53 * emptyRows }}>
-                                <TableCell colSpan={6} />
-                            </TableRow>
-                        )}
                     </TableBody>
                     <TableFooter>
                         <TableRow>

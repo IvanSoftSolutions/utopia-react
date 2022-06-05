@@ -118,8 +118,7 @@ export default function Formulas() {
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
     // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -331,10 +330,10 @@ export default function Formulas() {
 
     return (
         <>
-            <div className="formula-input" style={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                <List>
+            <div className="formula-input" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', maxWidth: 650, bgcolor: 'background.paper' }}>
+                <List >
                     <ListItem disablePadding>
-                        <FormControl required style={{ width: '58.5%', marginTop: '4px', marginBottom: '4px' }}>
+                        <FormControl required margin='dense' sx={{ width: '100%' }}>
                             <InputLabel id="demo-simple-select-label">Article</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -352,7 +351,7 @@ export default function Formulas() {
                         </FormControl>
                     </ListItem>
                     <ListItem disablePadding>
-                        <FormControl required style={{ width: '58.5%', marginTop: '4px', marginBottom: '4px' }}>
+                        <FormControl required margin='dense' sx={{ width: '100%' }}>
                             <InputLabel id="demo-simple-select-label">Color</InputLabel>
                             <Select
                                 labelId="demo-simple-select-label"
@@ -371,6 +370,8 @@ export default function Formulas() {
                     <ListItem disablePadding>
                         <TextField required id="outlined-basic" label="Weight" onChange={handleWeightChange} variant="outlined" margin='dense' />
                     </ListItem>
+                </List>
+                <List margin='dense' >
                     <ListItem disablePadding>
                         <TextField required id="outlined-basic" label="Thickness" onChange={handleThicknessChange} variant="outlined" margin='dense' />
                     </ListItem>
@@ -378,28 +379,31 @@ export default function Formulas() {
                         <TextField required id="outlined-basic" label="Material" onChange={handleMaterialChange} variant="outlined" margin='dense' />
                     </ListItem>
                     <ListItem disablePadding>
-                        <TextField id="outlined-basic" label="Details" multiline variant="outlined" margin='dense' sx={{ width: '100%' }} />
+                        <TextField id="outlined-basic" label="Details" multiline variant="outlined" margin='dense' fullWidth />
                     </ListItem>
                 </List>
             </div>
             <div>
+                <div style={{ display: 'flex', gap: 26, marginBottom: 15 }}>
+                    <Button variant='contained' onClick={() => {
+                        getFormula(article + '_' + color);
+                    }}>Buscar</Button>
+                    <Button variant='contained' onClick={() => {
+                        if (weight === 0 || thickness === '' || material === '' || article === '' || color === '') {
+                            setRequiredError(true);
+                        } else {
+                            setRequiredError(false);
+                            handleClickOpen();
+                        }
+
+                    }} >Aceptar</Button>
+                </div>
+
                 {error ? <Alert severity='error'>Incorrect user or password</Alert> : <></>}
                 {axiosError ? <Alert severity='error'>No registered formula for that 'Article Color' pair</Alert> : <></>}
                 {stockError ? <Alert severity='error'>There is not enough chemicals stock to run this formula</Alert> : <></>}
                 {requiredError ? <Alert severity='error'>Please fill all the required input fields</Alert> : <></>}
                 {success ? <Alert severity='success'>Formula info successfully stored in database</Alert> : <></>}
-                <Button variant="text" onClick={() => {
-                    getFormula(article + '_' + color)
-                }}>Buscar</Button>
-                <Button variant='text' onClick={() => {
-                    if (weight === 0 || thickness === '' || material === '' || article === '' || color === '') {
-                        setRequiredError(true);
-                    } else {
-                        setRequiredError(false);
-                        handleClickOpen();
-                    }
-
-                }} >Aceptar</Button>
                 <Dialog open={open} onClose={handleClose}>
                     <DialogTitle>Authorization needed</DialogTitle>
                     <DialogContent>

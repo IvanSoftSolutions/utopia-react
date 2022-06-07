@@ -147,7 +147,6 @@ export default function Formulas() {
                 if (stockError === true) {
                     return;
                 } else {
-                    handleDetailsChange()
                     let formulaData = {
                         formulaId: rows[0].formulaId,
                         userId: response.data.id,
@@ -379,7 +378,7 @@ export default function Formulas() {
                         <TextField required id="outlined-basic" label="Material" onChange={handleMaterialChange} variant="outlined" margin='dense' />
                     </ListItem>
                     <ListItem disablePadding>
-                        <TextField id="outlined-basic" label="Details" multiline variant="outlined" margin='dense' fullWidth />
+                        <TextField id="outlined-basic" label="Details" multiline onChange={handleDetailsChange} variant="outlined" margin='dense' fullWidth />
                     </ListItem>
                 </List>
             </div>

@@ -37,18 +37,18 @@ export default function Stock() {
                 </TableHead>
                 <TableBody>
                     {rows.map((row) => (
-                        <TableRow
-                            key={row.id}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                            <TableCell component="th" scope="row">
-                                {row.id}
-                            </TableCell>
-                            <TableCell>{row.pName}</TableCell>
-                            <TableCell>{row.qty}</TableCell>
-                            <TableCell>{row.price}</TableCell>
-                            <TableCell>{row.qty * row.price}</TableCell>
-                        </TableRow>
+                        row.id === 1 ? <TableRow></TableRow> : row.id === 2 ? <TableRow></TableRow> :
+                            row.id === 999 ? <TableRow></TableRow> :
+                                <TableRow
+                                    key={row.id}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <TableCell component="th" scope="row">{row.id}</TableCell>
+                                    <TableCell>{row.pName}</TableCell>
+                                    <TableCell>{row.qty}</TableCell>
+                                    <TableCell>{row.price}</TableCell>
+                                    <TableCell>{row.qty * row.price}</TableCell>
+                                </TableRow>
                     ))}
                 </TableBody>
             </Table>

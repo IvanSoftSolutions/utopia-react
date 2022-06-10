@@ -462,26 +462,32 @@ export default function Formulas() {
                         {(rowsPerPage > 0
                             ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             : rows).map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell>{row.percentage}</TableCell>
-                                    {(row.prodId === 2) ? <TableCell></TableCell> : (row.prodId === 99) ? <TableCell colSpan='6' >{row.observations}</TableCell> : <TableCell>{((weight) * (row.percentage)) / 100}</TableCell>}
-                                    <TableCell>{row.pName}</TableCell>
-                                    <TableCell>{row.temp}</TableCell>
-                                    <TableCell>{row.time}</TableCell>
-                                    <TableCell>{row.ph}</TableCell>
-                                    <TableCell>{row.cut}</TableCell>
-                                    {row.prodId === 99 ? <TableCell></TableCell> : <TableCell>{row.observations}</TableCell>}
-                                </TableRow>
+                                row.prodId === 999 ?
+                                    <TableRow>
+                                        <TableCell colSpan='8'>
+                                            {row.observations}
+                                        </TableCell>
+                                    </TableRow> :
+                                    <TableRow
+                                        key={row.id}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                        <TableCell>{row.percentage}</TableCell>
+                                        {(row.prodId === 2) ? <TableCell></TableCell> : <TableCell>{((weight) * (row.percentage)) / 100}</TableCell>}
+                                        <TableCell>{row.pName}</TableCell>
+                                        <TableCell>{row.temp}</TableCell>
+                                        <TableCell>{row.time}</TableCell>
+                                        <TableCell>{row.ph}</TableCell>
+                                        <TableCell>{row.cut}</TableCell>
+                                        {row.prodId === 999 ? <TableCell></TableCell> : <TableCell>{row.observations}</TableCell>}
+                                    </TableRow>
                             ))}
                     </TableBody>
                     <TableFooter>
                         <TableRow>
                             <TablePagination
                                 rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                                colSpan={3}
+                                colSpan={4}
                                 count={rows.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}

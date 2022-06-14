@@ -9,6 +9,7 @@ import Formulas from './pages/Formulas';
 import LogReport from './pages/LogReport';
 import Stock from './pages/Stock';
 import InOut from './pages/InOut';
+import Shipment from './pages/Shipment';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -58,6 +59,7 @@ export default function BasicTabs() {
           <Tab label="Log/Report" {...a11yProps(1)} />
           <Tab label="Stock" {...a11yProps(2)} />
           <Tab label="In/Out" {...a11yProps(3)} />
+          <Tab label="Shipment" {...a11yProps(4)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -71,6 +73,9 @@ export default function BasicTabs() {
       </TabPanel>
       <TabPanel value={value} index={3}>
         <InOut />
+      </TabPanel>
+      <TabPanel value={value} index={4}>
+        <Shipment />
       </TabPanel>
     </Box>
   );

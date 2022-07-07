@@ -27,28 +27,38 @@ export default function Shipment() {
     const [openShipment, setOpenShipment] = useState(false);
     const [dateShipment, setDateShipment] = useState('');
     const [serial, setSerial] = useState(0);
-
-
+    const [id, setId] = useState(0);
 
     useEffect((rows) => {
         ShipmentService.getShipments().then(response => {
             if (response.status === 200) {
                 console.log(response.data);
                 setRows(response.data);
-                console.log(rows);
+                // console.log(rows);
             }
         });
     }, [])
 
-    const handleClickOpenDoA = () => {
+    function updateDoA() {
+        if (dateArrival !== '' && id !== 0) {
+            ShipmentService.updateShipment(id, dateArrival)
+        } else {
+            console.log('nel')
+        }
+    }
+
+    const handleClickOpenDoA = (shipmentId) => {
         setOpenDoA(true);
         setChecked(true);
+        setId(shipmentId);
+        console.log(shipmentId);
     };
 
     const handleAcceptDoA = () => {
         setOpenDoA(false);
         setChecked(true);
         setDisabled(true);
+        updateDoA();
     }
 
     const handleCloseDoA = () => {
@@ -119,7 +129,7 @@ export default function Shipment() {
                                     <TableCell>{row.details}</TableCell>
                                     <Checkbox disabled defaultChecked color="default" />
                                     <TableCell>{row.shipDate}</TableCell>
-                                    <Checkbox disabled={disabled} checked={checked} onChange={handleClickOpenDoA} color="default" />
+                                    <Checkbox disabled={disabled} checked={checked} onChange={() => handleClickOpenDoA(row.id)} color="default" />
                                     <TableCell>{row.arriveDate}</TableCell>
                                 </TableRow>
                         ))}

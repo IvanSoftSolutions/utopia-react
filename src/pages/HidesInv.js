@@ -28,6 +28,7 @@ export default function HidesInv() {
             <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
                 <TableHead>
                     <TableRow>
+                        <TableCell>Id</TableCell>
                         <TableCell>Article</TableCell>
                         <TableCell>Color</TableCell>
                         <TableCell>Type</TableCell>
@@ -64,6 +65,7 @@ export default function HidesInv() {
                                     key={row.id}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
+                                    <TableCell>{row.id}</TableCell>
                                     <TableCell>{row.article}</TableCell>
                                     <TableCell>{row.color}</TableCell>
                                     <TableCell>{row.type}</TableCell>

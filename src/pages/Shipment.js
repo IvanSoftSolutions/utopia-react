@@ -129,7 +129,7 @@ export default function Shipment() {
                                     <TableCell>{row.details}</TableCell>
                                     <Checkbox disabled defaultChecked color="default" />
                                     <TableCell>{row.shipDate}</TableCell>
-                                    <Checkbox disabled={disabled} checked={checked} onChange={() => handleClickOpenDoA(row.id)} color="default" />
+                                    <Checkbox disabled={disabled} onChange={() => handleClickOpenDoA(row.id)} color="default" />
                                     <TableCell>{row.arriveDate}</TableCell>
                                 </TableRow>
                         ))}
@@ -138,6 +138,12 @@ export default function Shipment() {
                 </Table>
             </TableContainer>
             <Button variant="text" onClick={handleOpenShipment} >Add shipment</Button>
+            <div>
+                <Checkbox defaultChecked />
+                <Checkbox />
+                <Checkbox />
+                <Checkbox checked />
+            </div>
             <Dialog open={openDoA} onClose={handleCloseDoA}>
                 <DialogTitle>Date of arrival</DialogTitle>
                 <DialogContent>

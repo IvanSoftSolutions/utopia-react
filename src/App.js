@@ -9,7 +9,7 @@ import Formulas from './pages/Formulas';
 import LogReport from './pages/LogReport';
 import Stock from './pages/Stock';
 import InOut from './pages/InOut';
-// import Shipment from './pages/Shipment';
+import Shipment from './pages/Shipment';
 import HidesInv from './pages/HidesInv';
 
 function TabPanel(props) {
@@ -61,6 +61,7 @@ export default function BasicTabs() {
           <Tab label="Stock" {...a11yProps(2)} />
           <Tab label="In/Out" {...a11yProps(3)} />
           <Tab label="Hides Inv" {...a11yProps(4)} />
+          {/* <Tab label="Shipment" {...a11yProps(5)} /> */}
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -78,6 +79,9 @@ export default function BasicTabs() {
       <TabPanel value={value} index={4}>
         <HidesInv />
       </TabPanel>
+      {/* <TabPanel value={value} index={5}>
+        <Shipment />
+      </TabPanel> */}
     </Box>
   );
 }

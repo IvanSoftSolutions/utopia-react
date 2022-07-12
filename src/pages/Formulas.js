@@ -35,6 +35,8 @@ import FormulasService from '../services/FormulasService';
 import UserServices from '../services/UsuariosService';
 import InOutService from '../services/InOutService';
 import StockService from '../services/StockService';
+import ArticleService from '../services/ArticleService';
+import ColorService from '../services/ColorService';
 
 function TablePaginationActions(props) {
     const theme = useTheme();
@@ -104,9 +106,12 @@ export default function Formulas() {
     const [thickness, setThickness] = React.useState('');
     const [material, setMaterial] = React.useState('');
     const [details, setDetails] = React.useState('');
+    const [pallet, setPallet] = React.useState(0);
     const [user, setUser] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [rows, setRows] = React.useState([]);
+    const [articleRows, setArticleRows] = React.useState([]);
+    const [colorRows, setColorRows] = React.useState([]);
     const [open, setOpen] = React.useState(false);
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
@@ -129,7 +134,21 @@ export default function Formulas() {
         setPage(0);
     };
 
-    React.useEffect(() => {
+    React.useEffect((articleRows, colorRows) => {
+        ArticleService.getArticles().then(response => {
+            if (response.status === 200) {
+                console.log(response.data);
+                setArticleRows(response.data);
+                console.log(articleRows);
+            }
+        });
+        ColorService.getColors().then(response => {
+            if (response.status === 200) {
+                console.log(response.data);
+                setColorRows(response.data);
+                console.log(colorRows);
+            }
+        });
         return;
     }, [stockError])
 
@@ -326,6 +345,9 @@ export default function Formulas() {
     const handleDetailsChange = (event) => {
         setDetails(event.target.value);
     };
+    const handlePalletChange = (event) => {
+        setPallet(event.target.value);
+    }
 
     return (
         <>
@@ -341,11 +363,9 @@ export default function Formulas() {
                                 label="Article"
                                 onChange={handleArticleChange}
                             >
-                                <MenuItem value={'Bulldog'}>Bulldog</MenuItem>
-                                <MenuItem value={'UtopiaSmooth'}>UtopiaSmooth</MenuItem>
-                                <MenuItem value={'Diva'}>Diva</MenuItem>
-                                <MenuItem value={'Fantasy'}>Fantasy</MenuItem>
-                                <MenuItem value={'Shrunken'}>Shrunken</MenuItem>
+                                {articleRows.map((article) => (
+                                    <MenuItem value={article.name}>{article.name}</MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                     </ListItem>
@@ -359,10 +379,9 @@ export default function Formulas() {
                                 label="Color"
                                 onChange={handleColorChange}
                             >
-                                <MenuItem value={'Brown'}>Brown</MenuItem>
-                                <MenuItem value={'Natural'}>Natural</MenuItem>
-                                <MenuItem value={'Black'}>Black</MenuItem>
-                                <MenuItem value={'DarkBrown'}>DarkBrown</MenuItem>
+                                {colorRows.map((color) => (
+                                    <MenuItem value={color.name}>{color.name}</MenuItem>
+                                ))}
                             </Select>
                         </FormControl>
                     </ListItem>
@@ -381,6 +400,9 @@ export default function Formulas() {
                         <TextField id="outlined-basic" label="Details" multiline onChange={handleDetailsChange} variant="outlined" margin='dense' fullWidth />
                     </ListItem>
                 </List>
+                {/* <List>
+                        <TextField required id="outlined-basic" label="Pallet(s)" onChange={handlePalletChange} variant="outlined" margin='dense' />
+                </List> */}
             </div>
             <div>
                 <div style={{ display: 'flex', gap: 26, marginBottom: 15 }}>

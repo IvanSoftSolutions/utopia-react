@@ -59,40 +59,38 @@ export default function HidesInv() {
                 </TableHead>
                 <TableBody>
                     {rows.map((row) => (
-                        row.id === 1 ? <TableRow></TableRow> : row.id === 2 ? <TableRow></TableRow> :
-                            row.id === 999 ? <TableRow></TableRow> :
-                                <TableRow
-                                    key={row.id}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <TableCell>{row.id}</TableCell>
-                                    <TableCell>{row.article}</TableCell>
-                                    <TableCell>{row.color}</TableCell>
-                                    <TableCell>{row.type}</TableCell>
-                                    <TableCell>{row.kind}</TableCell>
-                                    <TableCell>{row.wholesHide}</TableCell>
-                                    <TableCell>{row.sides}</TableCell>
-                                    <TableCell>{row.shrunkenShoulder}</TableCell>
-                                    <TableCell>{row.doubleButt}</TableCell>
-                                    <TableCell>{row.total}</TableCell>
-                                    <TableCell>{row.grade}</TableCell>
-                                    <TableCell>{row.ubicacion}</TableCell>
-                                    <TableCell>{row.pallet}</TableCell>
-                                    <TableCell>{row.location}</TableCell>
-                                    <TableCell>{row.costHide}</TableCell>
-                                    <TableCell>{row.piecesxcost}</TableCell>
-                                    <TableCell>{row.fungus}</TableCell>
-                                    <TableCell>{row.shaved}</TableCell>
-                                    <TableCell>{row.thickness}</TableCell>
-                                    <TableCell>{row.rejects}</TableCell>
-                                    <TableCell>{row.isPallet}</TableCell>
-                                    <TableCell>{row.upoTruck}</TableCell>
-                                    <TableCell>{row.date}</TableCell>
-                                    <TableCell>{row.reviewer}</TableCell>
-                                    <TableCell>{row.observations}</TableCell>
-                                    <TableCell>{row.modificationSales}</TableCell>
-                                    <TableCell>{row.reviewed}</TableCell>
-                                </TableRow>
+                        <TableRow
+                            key={row.id}
+                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                        >
+                            <TableCell>{row.id}</TableCell>
+                            <TableCell>{row.article}</TableCell>
+                            <TableCell>{row.color}</TableCell>
+                            <TableCell>{row.type}</TableCell>
+                            <TableCell>{row.kind}</TableCell>
+                            <TableCell>{row.wholesHide}</TableCell>
+                            <TableCell>{row.sides}</TableCell>
+                            <TableCell>{row.shrunkenShoulder}</TableCell>
+                            <TableCell>{row.doubleButt}</TableCell>
+                            <TableCell>{row.total}</TableCell>
+                            <TableCell>{row.grade}</TableCell>
+                            <TableCell>{row.ubicacion}</TableCell>
+                            <TableCell>{row.pallet}</TableCell>
+                            <TableCell>{row.location}</TableCell>
+                            <TableCell>{row.costHide}</TableCell>
+                            <TableCell>{row.piecesxcost}</TableCell>
+                            <TableCell>{row.fungus}</TableCell>
+                            <TableCell>{row.shaved}</TableCell>
+                            <TableCell>{row.thickness}</TableCell>
+                            <TableCell>{row.rejects}</TableCell>
+                            <TableCell>{row.isPallet}</TableCell>
+                            <TableCell>{row.upoTruck}</TableCell>
+                            <TableCell>{row.date}</TableCell>
+                            <TableCell>{row.reviewer}</TableCell>
+                            <TableCell>{row.observations}</TableCell>
+                            <TableCell>{row.modificationSales}</TableCell>
+                            <TableCell>{row.reviewed}</TableCell>
+                        </TableRow>
                     ))}
                 </TableBody>
             </Table>

@@ -351,8 +351,10 @@ export default function Formulas() {
 
     return (
         <>
+            {/* Input fields container */}
             <div className="formula-input" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', maxWidth: 650, bgcolor: 'background.paper' }}>
                 <List >
+                    {/* Article */}
                     <ListItem disablePadding>
                         <FormControl required margin='dense' sx={{ width: '100%' }}>
                             <InputLabel id="demo-simple-select-label">Article</InputLabel>
@@ -369,6 +371,7 @@ export default function Formulas() {
                             </Select>
                         </FormControl>
                     </ListItem>
+                    {/* Color */}
                     <ListItem disablePadding>
                         <FormControl required margin='dense' sx={{ width: '100%' }}>
                             <InputLabel id="demo-simple-select-label">Color</InputLabel>
@@ -385,17 +388,21 @@ export default function Formulas() {
                             </Select>
                         </FormControl>
                     </ListItem>
+                    {/* Weight */}
                     <ListItem disablePadding>
                         <TextField required id="outlined-basic" label="Weight" onChange={handleWeightChange} variant="outlined" margin='dense' />
                     </ListItem>
                 </List>
                 <List margin='dense' >
+                    {/* Thickness */}
                     <ListItem disablePadding>
                         <TextField required id="outlined-basic" label="Thickness" onChange={handleThicknessChange} variant="outlined" margin='dense' />
                     </ListItem>
+                    {/* Material */}
                     <ListItem disablePadding>
                         <TextField required id="outlined-basic" label="Material" onChange={handleMaterialChange} variant="outlined" margin='dense' />
                     </ListItem>
+                    {/* Details */}
                     <ListItem disablePadding>
                         <TextField id="outlined-basic" label="Details" multiline onChange={handleDetailsChange} variant="outlined" margin='dense' fullWidth />
                     </ListItem>
@@ -404,7 +411,9 @@ export default function Formulas() {
                         <TextField required id="outlined-basic" label="Pallet(s)" onChange={handlePalletChange} variant="outlined" margin='dense' />
                 </List> */}
             </div>
+            {/* Search/Accept buttons, Auth Dialog container & table container */}
             <div>
+                {/* Search buttons */}
                 <div style={{ display: 'flex', gap: 26, marginBottom: 15 }}>
                     <Button variant='contained' onClick={() => {
                         getFormula(article + '_' + color);
@@ -419,12 +428,13 @@ export default function Formulas() {
 
                     }} >Aceptar</Button>
                 </div>
-
+                {/* Error/Success notificacions */}
                 {error ? <Alert severity='error'>Incorrect user or password</Alert> : <></>}
                 {axiosError ? <Alert severity='error'>No registered formula for that 'Article Color' pair</Alert> : <></>}
                 {stockError ? <Alert severity='error'>There is not enough chemicals stock to run this formula</Alert> : <></>}
                 {requiredError ? <Alert severity='error'>Please fill all the required input fields</Alert> : <></>}
                 {success ? <Alert severity='success'>Formula info successfully stored in database</Alert> : <></>}
+                {/* Auth Dialog Container */}
                 <Dialog open={open} onClose={handleClose}>
                     <DialogTitle>Authorization needed</DialogTitle>
                     <DialogContent>
@@ -466,6 +476,7 @@ export default function Formulas() {
                     </DialogActions>
                 </Dialog>
             </div>
+            {/* Table container */}
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
                     <TableHead>

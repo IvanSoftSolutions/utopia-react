@@ -37,6 +37,7 @@ import InOutService from '../services/InOutService';
 import StockService from '../services/StockService';
 import ArticleService from '../services/ArticleService';
 import ColorService from '../services/ColorService';
+import HidesInvService from '../services/HidesInvService';
 
 function TablePaginationActions(props) {
     const theme = useTheme();
@@ -112,6 +113,7 @@ export default function Formulas() {
     const [rows, setRows] = React.useState([]);
     const [articleRows, setArticleRows] = React.useState([]);
     const [colorRows, setColorRows] = React.useState([]);
+    const [palletRows, setPalletRows] = React.useState([]);
     const [open, setOpen] = React.useState(false);
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
@@ -134,7 +136,7 @@ export default function Formulas() {
         setPage(0);
     };
 
-    React.useEffect((articleRows, colorRows) => {
+    React.useEffect((articleRows, colorRows, palletRows) => {
         ArticleService.getArticles().then(response => {
             if (response.status === 200) {
                 console.log(response.data);
@@ -149,6 +151,13 @@ export default function Formulas() {
                 console.log(colorRows);
             }
         });
+        HidesInvService.getPalletId().then(response => {
+            if (response.status === 200) {
+                console.log(response.data);
+                setPalletRows(response.data);
+                console.log(palletRows);
+            }
+        })
         return;
     }, [stockError])
 
@@ -345,6 +354,7 @@ export default function Formulas() {
     const handleDetailsChange = (event) => {
         setDetails(event.target.value);
     };
+
     const handlePalletChange = (event) => {
         setPallet(event.target.value);
     }
@@ -388,6 +398,23 @@ export default function Formulas() {
                             </Select>
                         </FormControl>
                     </ListItem>
+                    {/* Pallet */}
+                    <ListItem disablePadding>
+                        <FormControl required margin='dense' sx={{ width: '100%' }}>
+                            <InputLabel id="demo-simple-select-label">Pallet</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={pallet}
+                                label="Pallet"
+                                onChange={handlePalletChange}
+                            >
+                                {palletRows.map((pallet) => (
+                                    <MenuItem value={pallet.id}>{pallet.id}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </ListItem>
                     {/* Weight */}
                     <ListItem disablePadding>
                         <TextField required id="outlined-basic" label="Weight" onChange={handleWeightChange} variant="outlined" margin='dense' />
@@ -407,9 +434,6 @@ export default function Formulas() {
                         <TextField id="outlined-basic" label="Details" multiline onChange={handleDetailsChange} variant="outlined" margin='dense' fullWidth />
                     </ListItem>
                 </List>
-                {/* <List>
-                        <TextField required id="outlined-basic" label="Pallet(s)" onChange={handlePalletChange} variant="outlined" margin='dense' />
-                </List> */}
             </div>
             {/* Search/Accept buttons, Auth Dialog container & table container */}
             <div>
@@ -459,7 +483,7 @@ export default function Formulas() {
                                 margin="dense"
                                 id="password"
                                 label="Password"
-                                type="pasword"
+                                type="password"
                                 variant="standard"
                                 onChange={handlePasswordChange}
                             />

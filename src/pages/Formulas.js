@@ -120,6 +120,7 @@ export default function Formulas() {
     const [axiosError, setAxiosError] = React.useState(false);
     const [stockError, setStockError] = React.useState(false);
     const [requiredError, setRequiredError] = React.useState(false);
+    const [stockAuth, setStockAuth] = React.useState(false);
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -172,7 +173,7 @@ export default function Formulas() {
             if (response.status === 200) {
                 setError(false);
                 checkStock();
-                if (stockError === true) {
+                if (stockAuth === false) {
                     return;
                 } else {
                     let formulaData = {
@@ -185,6 +186,7 @@ export default function Formulas() {
                         details: details
                     };
                     postFormula(formulaData);
+                    deletePallet();
                 }
                 console.log(response.data);
             }
@@ -232,12 +234,13 @@ export default function Formulas() {
             console.log(formulaTotal);
             console.log(filteredStockTotal);
 
-            let stockAuth = filteredStockTotal.every(function (element, index) {
+            let stockAux = filteredStockTotal.every(function (element, index) {
                 return element > formulaTotal[index];
             })
-            console.log(stockAuth);
+            setStockAuth(stockAux)
+            console.log(stockAux);
 
-            if (stockAuth) {
+            if (stockAux) {
                 setStockError(false);
                 ingredientIds.map(i => {
                     let stockData = {
@@ -309,6 +312,16 @@ export default function Formulas() {
                 console.log(error.response.data)
                 setRows([]);
                 setAxiosError(true);
+            }
+        })
+    }
+
+    function deletePallet() {
+        HidesInvService.deletePallet(pallet).then(response => {
+            if (response.status === 200) {
+                console.log(response.data)
+            } else {
+                console.log('nel')
             }
         })
     }
@@ -443,7 +456,7 @@ export default function Formulas() {
                         getFormula(article + '_' + color);
                     }}>Buscar</Button>
                     <Button variant='contained' onClick={() => {
-                        if (weight === 0 || thickness === '' || material === '' || article === '' || color === '') {
+                        if (weight === 0 || thickness === '' || material === '' || article === '' || color === '' || pallet === 0) {
                             setRequiredError(true);
                         } else {
                             setRequiredError(false);

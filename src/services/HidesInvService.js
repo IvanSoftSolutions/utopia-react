@@ -8,6 +8,10 @@ class HidesInvServices {
     getPalletId() {
         return http.get("/InvHide/getPallet")
     }
+
+    deletePallet(id) {
+        return http.delete(`/InvHide?id=${id}`)
+    }
 }
 
 export default new HidesInvServices();

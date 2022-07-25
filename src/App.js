@@ -47,36 +47,59 @@ function a11yProps(index) {
 
 export default function BasicTabs() {
   const [value, setValue] = React.useState(0);
+  const [nestedValue, setNestedValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+
+  const handleNestedChange = (event, newValue) => {
+    setNestedValue(newValue);
   };
 
   return (
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-          <Tab label="Run Formula" {...a11yProps(0)} />
-          <Tab label="Log/Report" {...a11yProps(1)} />
-          <Tab label="Stock" {...a11yProps(2)} />
-          <Tab label="In/Out" {...a11yProps(3)} />
-          <Tab label="Hides Inv" {...a11yProps(4)} />
+          <Tab label="Formulas" {...a11yProps(0)} />
+          <Tab label="Chemicals" {...a11yProps(1)} />
+          <Tab label="Hides Inventory" {...a11yProps(2)} />
           {/* <Tab label="Shipment" {...a11yProps(5)} /> */}
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <Formulas />
+        <Box sx={{ width: '100%' }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={nestedValue} onChange={handleNestedChange} aria-label="basic tabs example">
+              <Tab label="Search/Run" {...a11yProps(0)} />
+              <Tab label="Log/Report" {...a11yProps(1)} />
+            </Tabs>
+          </Box>
+          <TabPanel value={nestedValue} index={0}>
+            <Formulas />
+          </TabPanel>
+          <TabPanel value={nestedValue} index={1}>
+            <LogReport />
+          </TabPanel>
+        </Box>
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <LogReport />
+        <Box sx={{ width: '100%' }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={nestedValue} onChange={handleNestedChange} aria-label="basic tabs example">
+              <Tab label="Stock" {...a11yProps(0)} />
+              <Tab label="In/Out" {...a11yProps(1)} />
+            </Tabs>
+          </Box>
+          <TabPanel value={nestedValue} index={0}>
+            <Stock />
+          </TabPanel>
+          <TabPanel value={nestedValue} index={1}>
+            <InOut />
+          </TabPanel>
+        </Box>
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <Stock />
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        <InOut />
-      </TabPanel>
-      <TabPanel value={value} index={4}>
         <HidesInv />
       </TabPanel>
       {/* <TabPanel value={value} index={5}>

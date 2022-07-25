@@ -9,6 +9,10 @@ class HidesInvServices {
         return http.get("/InvHide/getPallet")
     }
 
+    postPallet(data) {
+        return http.post("InvHide/", data)
+    }
+
     deletePallet(id) {
         return http.delete(`/InvHide?id=${id}`)
     }

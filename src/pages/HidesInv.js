@@ -1,6 +1,5 @@
 import React from 'react';
 import Alert from '@mui/material/Alert';
-
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -258,9 +257,11 @@ export default function HidesInv() {
 
     const handleClickOpen = () => {
         setOpen(true);
+        setSuccess(false);
     };
 
     const handleClose = () => {
+        setError(false);
         setOpen(false);
     };
 
@@ -410,105 +411,111 @@ export default function HidesInv() {
                     </TableFooter>
                 </Table>
             </TableContainer>
-            {error ? <Alert severity='error'>Something went wrong</Alert> : <></>}
             {success ? <Alert severity='success'>Pallet info successfully stored in database</Alert> : <></>}
             <div>
                 <Button variant='contained' onClick={handleClickOpen}>Agregar</Button>
             </div>
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={open} onClose={handleClose} >
                 <DialogTitle>Add chemical</DialogTitle>
-                <DialogContent>
+                <DialogContent >
                     {/* {() => handleAlert(success, error)} */}
                     <DialogContentText>
                         Introduce new pallet info
                     </DialogContentText>
-                    <List>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="article" label="Article" type="text" variant="standard" onChange={handleArticleChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="color" label="Color" type="text" variant="standard" onChange={handleColorChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="type" label="Type" type="text" variant="standard" onChange={handleTypeChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="kind" label="Kind" type="text" variant="standard" onChange={handleKindChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="wholesHide" label="Wholes Hide" type="number" variant="standard" onChange={handleWholesHideChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="sides" label="Sides" type="number" variant="standard" onChange={handleSidesChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="shrunkenShoulder" label="Shrunken Shoulder" type="number" variant="standard" onChange={handleShrunkenShoulderChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="doubleButt" label="Double Butt" type="number" variant="standard" onChange={handleDoubleButtChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="total" label="Total" type="number" variant="standard" onChange={handleTotalChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="grade" label="Grade" type="text" variant="standard" onChange={handleGradeChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="ubicacion" label="Ubicacion" type="text" variant="standard" onChange={handleUbicacionChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="pallet" label="Pallet" type="number" variant="standard" onChange={handlePalletChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="location" label="Location" type="text" variant="standard" onChange={handleLocationChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="costHide" label="Cost per hide" type="number" variant="standard" onChange={handleCostHideChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="piecesCost" label="Pieces x Cost" type="number" variant="standard" onChange={handlePiecesCostChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="fungus" label="Fungus" type="text" variant="standard" onChange={handleFungusChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="shaved" label="Shaved" type="text" variant="standard" onChange={handleShavedChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="thickness" label="Thickness" type="text" variant="standard" onChange={handleThicknessChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="washed" label="Washed" type="text" variant="standard" onChange={handleWashedChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="rejects" label="Rejects" type="text" variant="standard" onChange={handleRejectsChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="isPallet" label="Is ir really the pallet at Warehouse A/B?" type="text" variant="standard" onChange={handleIsPalletChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="upoTruck" label="UPO/Truck" type="text" variant="standard" onChange={handleUpoTruckChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="date" label="Date" type="text" variant="standard" onChange={handleDateChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="reviewer" label="Reviewer" type="text" variant="standard" onChange={handleReviewerChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="observations" label="Observations" type="text" variant="standard" onChange={handleObservationsChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="modificationSales" label="Modification/Sales" type="text" variant="standard" onChange={handleModificationSalesChange} />
-                        </ListItem>
-                        <ListItem>
-                            <TextField autoFocus margin="dense" id="reviewed" label="Reviewed" type="text" variant="standard" onChange={handleReviewedChange} />
-                        </ListItem>
-                    </List>
+                    <div style={{ display: 'flex', flexDirection: 'row' }}>
+                        <List >
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="article" label="Article" type="text" variant="standard" onChange={handleArticleChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="color" label="Color" type="text" variant="standard" onChange={handleColorChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="type" label="Type" type="text" variant="standard" onChange={handleTypeChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="kind" label="Kind" type="text" variant="standard" onChange={handleKindChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="wholesHide" label="Wholes Hide" type="number" variant="standard" onChange={handleWholesHideChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="sides" label="Sides" type="number" variant="standard" onChange={handleSidesChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="shrunkenShoulder" label="Shrunken Shoulder" type="number" variant="standard" onChange={handleShrunkenShoulderChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="doubleButt" label="Double Butt" type="number" variant="standard" onChange={handleDoubleButtChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="total" label="Total" type="number" variant="standard" onChange={handleTotalChange} />
+                            </ListItem>
+                        </List>
+                        <List>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="grade" label="Grade" type="text" variant="standard" onChange={handleGradeChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="ubicacion" label="Ubicacion" type="text" variant="standard" onChange={handleUbicacionChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="pallet" label="Pallet" type="number" variant="standard" onChange={handlePalletChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="location" label="Location" type="text" variant="standard" onChange={handleLocationChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="costHide" label="Cost per hide" type="number" variant="standard" onChange={handleCostHideChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="piecesCost" label="Pieces x Cost" type="number" variant="standard" onChange={handlePiecesCostChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="fungus" label="Fungus" type="text" variant="standard" onChange={handleFungusChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="shaved" label="Shaved" type="text" variant="standard" onChange={handleShavedChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="thickness" label="Thickness" type="text" variant="standard" onChange={handleThicknessChange} />
+                            </ListItem>
+                        </List>
+                        <List>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="washed" label="Washed" type="text" variant="standard" onChange={handleWashedChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="rejects" label="Rejects" type="text" variant="standard" onChange={handleRejectsChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="isPallet" label="Is ir really the pallet at Warehouse A/B?" type="text" variant="standard" onChange={handleIsPalletChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="upoTruck" label="UPO/Truck" type="text" variant="standard" onChange={handleUpoTruckChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="date" label="Date" type="text" variant="standard" onChange={handleDateChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="reviewer" label="Reviewer" type="text" variant="standard" onChange={handleReviewerChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="observations" label="Observations" type="text" variant="standard" onChange={handleObservationsChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="modificationSales" label="Modification/Sales" type="text" variant="standard" onChange={handleModificationSalesChange} />
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="reviewed" label="Reviewed" type="text" variant="standard" onChange={handleReviewedChange} />
+                            </ListItem>
+                        </List>
+                    </div>
+                    {error ? <Alert severity='error'>Something went wrong</Alert> : <></>}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={postPallet}>Accept </Button>
-                    <Button onClick={handleClose}>Cancel</Button>
+                    <Button variant="contained" onClick={handleClose}>Cancel</Button>
+                    <Button variant="contained" onClick={postPallet}>Accept </Button>
                 </DialogActions>
             </Dialog>
         </>

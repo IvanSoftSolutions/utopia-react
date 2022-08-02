@@ -476,7 +476,7 @@ export default function Formulas() {
                                 onChange={handlePalletChange}
                             >
                                 {palletRows.map((pallet) => (
-                                    <MenuItem value={pallet.id}>{pallet.id}</MenuItem>
+                                    <MenuItem value={pallet.id}>{pallet.id} {pallet.article}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>

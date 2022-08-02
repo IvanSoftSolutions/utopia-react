@@ -64,7 +64,7 @@ export default function BasicTabs() {
           <Tab label="Formulas" {...a11yProps(0)} />
           <Tab label="Chemicals" {...a11yProps(1)} />
           <Tab label="Hides Inventory" {...a11yProps(2)} />
-          {/* <Tab label="Shipment" {...a11yProps(5)} /> */}
+          <Tab label="Shipment" {...a11yProps(3)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -102,9 +102,9 @@ export default function BasicTabs() {
       <TabPanel value={value} index={2}>
         <HidesInv />
       </TabPanel>
-      {/* <TabPanel value={value} index={5}>
+      <TabPanel value={value} index={3}>
         <Shipment />
-      </TabPanel> */}
+      </TabPanel>
     </Box>
   );
 }

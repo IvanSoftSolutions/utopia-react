@@ -131,6 +131,7 @@ export default function Stock() {
                         <TableRow>
                             <TableCell></TableCell>
                             <TableCell>Name</TableCell>
+                            <TableCell>Producer</TableCell>
                             <TableCell>Quantity</TableCell>
                             <TableCell>Price</TableCell>
                             <TableCell>Total</TableCell>
@@ -148,6 +149,7 @@ export default function Stock() {
                                         >
                                             <TableCell component="th" scope="row">{row.id}</TableCell>
                                             <TableCell>{row.pName}</TableCell>
+                                            <TableCell>{row.producer}</TableCell>
                                             <TableCell>{row.qty}</TableCell>
                                             <TableCell>{row.price}</TableCell>
                                             <TableCell>{row.qty * row.price}</TableCell>

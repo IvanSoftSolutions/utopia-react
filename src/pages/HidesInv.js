@@ -10,7 +10,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableFooter from '@mui/material/TableFooter';
 import TablePagination from '@mui/material/TablePagination';
+import TableSortLabel from '@mui/material/TableSortLabel';
 import TableRow from '@mui/material/TableRow';
+import { visuallyHidden } from '@mui/utils';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import List from '@mui/material/List';
@@ -91,6 +93,251 @@ TablePaginationActions.propTypes = {
     rowsPerPage: PropTypes.number.isRequired,
 };
 
+function descendingComparator(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+        return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+        return 1;
+    }
+    return 0;
+}
+
+function getComparator(order, orderBy) {
+    return order === 'desc'
+        ? (a, b) => descendingComparator(a, b, orderBy)
+        : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+// This method is created for cross-browser compatibility, if you don't
+// need to support IE11, you can use Array.prototype.sort() directly
+function stableSort(array, comparator) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+        const order = comparator(a[0], b[0]);
+        if (order !== 0) {
+            return order;
+        }
+        return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+}
+
+const headCells = [
+    {
+        id: 'id',
+        numeric: true,
+        disablePadding: false,
+        label: 'Id',
+    },
+    {
+        id: 'article',
+        numeric: false,
+        disablePadding: false,
+        label: 'Article',
+    },
+    {
+        id: 'color',
+        numeric: false,
+        disablePadding: false,
+        label: 'Color',
+    },
+    {
+        id: 'type',
+        numeric: false,
+        disablePadding: false,
+        label: 'Type',
+    },
+    {
+        id: 'kind',
+        numeric: false,
+        disablePadding: false,
+        label: 'Kind',
+    },
+    {
+        id: 'wholesHide',
+        numeric: true,
+        disablePadding: false,
+        label: 'Wholes Hide',
+    },
+    {
+        id: 'sides',
+        numeric: true,
+        disablePadding: false,
+        label: 'Sides',
+    },
+    {
+        id: 'shrunkenShoulder',
+        numeric: true,
+        disablePadding: false,
+        label: 'Shrunken Shoulder',
+    },
+    {
+        id: 'doubleButt',
+        numeric: true,
+        disablePadding: false,
+        label: 'Double Butt',
+    },
+    {
+        id: 'total',
+        numeric: true,
+        disablePadding: false,
+        label: 'Total',
+    },
+    {
+        id: 'grade',
+        numeric: false,
+        disablePadding: false,
+        label: 'Grade',
+    },
+    {
+        id: 'ubicacion',
+        numeric: false,
+        disablePadding: false,
+        label: 'Ubicacion',
+    },
+    {
+        id: 'pallet',
+        numeric: true,
+        disablePadding: false,
+        label: 'Pallet',
+    },
+    {
+        id: 'location',
+        numeric: false,
+        disablePadding: false,
+        label: 'Location',
+    },
+    {
+        id: 'costHide',
+        numeric: true,
+        disablePadding: false,
+        label: 'Cost Per Hide',
+    },
+    {
+        id: 'piecesCost',
+        numeric: true,
+        disablePadding: false,
+        label: 'Pieces x Cost',
+    },
+    {
+        id: 'fungus',
+        numeric: false,
+        disablePadding: false,
+        label: 'Fungus',
+    },
+    {
+        id: 'shaved',
+        numeric: false,
+        disablePadding: false,
+        label: 'Shaved',
+    },
+    {
+        id: 'thickness',
+        numeric: false,
+        disablePadding: false,
+        label: 'Thickness',
+    },
+    {
+        id: 'washed',
+        numeric: false,
+        disablePadding: false,
+        label: 'Washed',
+    },
+    {
+        id: 'rejects',
+        numeric: false,
+        disablePadding: false,
+        label: 'Rejects',
+    },
+    {
+        id: 'isPallet',
+        numeric: false,
+        disablePadding: false,
+        label: 'Is It Really The Pallet At Warehouse A/B?',
+    },
+    {
+        id: 'upoTruck',
+        numeric: false,
+        disablePadding: false,
+        label: 'UPO/Truck',
+    },
+    {
+        id: 'date',
+        numeric: false,
+        disablePadding: false,
+        label: 'Date',
+    },
+    {
+        id: 'reviewer',
+        numeric: false,
+        disablePadding: false,
+        label: 'Reviewer',
+    },
+    {
+        id: 'observations',
+        numeric: false,
+        disablePadding: false,
+        label: 'Observations',
+    },
+    {
+        id: 'modificationSales',
+        numeric: false,
+        disablePadding: false,
+        label: 'Modification/Sales',
+    },
+    {
+        id: 'reviewed',
+        numeric: false,
+        disablePadding: false,
+        label: 'Reviewed',
+    }
+];
+
+function EnhancedTableHead(props) {
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+        props;
+    const createSortHandler = (property) => (event) => {
+        onRequestSort(event, property);
+    };
+
+    return (
+        <TableHead>
+            <TableRow>
+                {headCells.map((headCell) => (
+                    <TableCell
+                        key={headCell.id}
+                        padding={headCell.disablePadding ? 'none' : 'normal'}
+                        sortDirection={orderBy === headCell.id ? order : false}
+                    >
+                        <TableSortLabel
+                            active={orderBy === headCell.id}
+                            direction={orderBy === headCell.id ? order : 'asc'}
+                            onClick={createSortHandler(headCell.id)}
+                        >
+                            {headCell.label}
+                            {orderBy === headCell.id ? (
+                                <Box component="span" sx={visuallyHidden}>
+                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                </Box>
+                            ) : null}
+                        </TableSortLabel>
+                    </TableCell>
+                ))}
+            </TableRow>
+        </TableHead>
+    );
+}
+
+EnhancedTableHead.propTypes = {
+    numSelected: PropTypes.number.isRequired,
+    onRequestSort: PropTypes.func.isRequired,
+    onSelectAllClick: PropTypes.func.isRequired,
+    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    orderBy: PropTypes.string.isRequired,
+    rowCount: PropTypes.number.isRequired,
+};
+
 export default function HidesInv() {
     const [rows, setRows] = useState([]);
     const [open, setOpen] = React.useState(false);
@@ -124,8 +371,16 @@ export default function HidesInv() {
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
 
+    const [order, setOrder] = React.useState('asc');
+    const [orderBy, setOrderBy] = React.useState('calories');
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    const handleRequestSort = (event, property) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -318,42 +573,16 @@ export default function HidesInv() {
         <>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Id</TableCell>
-                            <TableCell>Article</TableCell>
-                            <TableCell>Color</TableCell>
-                            <TableCell>Type</TableCell>
-                            <TableCell>Kind</TableCell>
-                            <TableCell>Wholes Hide</TableCell>
-                            <TableCell>Sides</TableCell>
-                            <TableCell>Shrunken Shoulder</TableCell>
-                            <TableCell>Double Butt</TableCell>
-                            <TableCell>Total</TableCell>
-                            <TableCell>Grade</TableCell>
-                            <TableCell>Ubicacion</TableCell>
-                            <TableCell>Pallet</TableCell>
-                            <TableCell>Location</TableCell>
-                            <TableCell>Cost Per Hide</TableCell>
-                            <TableCell>Pieces x Cost</TableCell>
-                            <TableCell>Fungus</TableCell>
-                            <TableCell>Shaved</TableCell>
-                            <TableCell>Thickness</TableCell>
-                            <TableCell>Washed</TableCell>
-                            <TableCell>Rejects</TableCell>
-                            <TableCell>Is It Really The Pallet At Warehouse A/B?</TableCell>
-                            <TableCell>UPO/Truck</TableCell>
-                            <TableCell>Date</TableCell>
-                            <TableCell>Reviewer</TableCell>
-                            <TableCell>Observations</TableCell>
-                            <TableCell>Modification/Sales</TableCell>
-                            <TableCell>Reviewed</TableCell>
-                        </TableRow>
-                    </TableHead>
+                    <EnhancedTableHead
+                        order={order}
+                        orderBy={orderBy}
+                        onRequestSort={handleRequestSort}
+                        rowCount={rows.length}
+                    />
                     <TableBody>
-                        {(rowsPerPage > 0
-                            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            : rows).map((row) => (
+                        {stableSort(rows, getComparator(order, orderBy))
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((row) => (
                                 <TableRow
                                     key={row.id}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

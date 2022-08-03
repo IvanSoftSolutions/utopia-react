@@ -95,6 +95,11 @@ export default function Stock() {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [open, setOpen] = React.useState(false);
+    const [openNew, setOpenNew] = React.useState(false);
+    const [name, setName] = React.useState('');
+    const [producer, setProducer] = React.useState('');
+    const [qty, setQty] = React.useState('');
+    const [price, setPrice] = React.useState('');
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -113,15 +118,74 @@ export default function Stock() {
                 console.log(rows);
             }
         });
-    }, [])
+    }, [open, openNew])
 
     const handleClickOpen = () => {
         setOpen(true);
     };
 
+    const handleOpenNew = () => {
+        setOpenNew(true);
+    };
+
     const handleClose = () => {
         setOpen(false);
     };
+
+    const handleCloseNew = () => {
+        setOpenNew(false);
+    };
+
+    const handleNameChange = (event) => {
+        setName(event.target.value);
+    };
+
+    const handleProducerChange = (event) => {
+        setProducer(event.target.value);
+    };
+
+    const handleQtyChange = (event) => {
+        setQty(event.target.value);
+    };
+
+    const handlePriceChange = (event) => {
+        setPrice(event.target.value);
+    };
+
+    function addStock() {
+        let data = {
+            name: name,
+            qty: qty
+        }
+        StockService.addStock(data).then(response => {
+            if (response.status === 200) {
+                console.log(response);
+                console.log('simon')
+                setOpen(false);
+            } else {
+                console.log('nel')
+            }
+        })
+    }
+
+    function newChemical() {
+        let data = {
+            pName: name,
+            producer: producer,
+            qty: qty,
+            price: price
+        }
+        StockService.newChemical(data).then(response => {
+            if (response.status === 200) {
+                console.log(response);
+                console.log('simon')
+                setOpenNew(false);
+            } else {
+                console.log(response);
+                console.log('nel')
+            }
+        })
+    }
 
     return (
         <>
@@ -179,10 +243,11 @@ export default function Stock() {
                 </Table>
             </TableContainer>
             <div>
+                <Button variant='contained' onClick={handleOpenNew}>New chemical</Button>
                 <Button variant='contained' onClick={handleClickOpen}>Agregar</Button>
             </div>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Add chemical</DialogTitle>
+                <DialogTitle>Add chemical stock</DialogTitle>
                 <DialogContent>
                     {/* {() => handleAlert(success, error)} */}
                     <DialogContentText>
@@ -197,7 +262,7 @@ export default function Stock() {
                                 label="Name"
                                 type="text"
                                 variant="standard"
-                            // onChange={handleUserChange}
+                                onChange={handleNameChange}
                             />
                         </ListItem>
                         <ListItem>
@@ -208,14 +273,73 @@ export default function Stock() {
                                 label="Quantity"
                                 type="number"
                                 variant="standard"
-                            // onChange={handlePasswordChange}
+                                onChange={handleQtyChange}
                             />
                         </ListItem>
                     </List>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <Button>Accept</Button>
+                    <Button onClick={addStock}>Accept</Button>
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openNew} onClose={handleCloseNew}>
+                <DialogTitle>Add New Chemical</DialogTitle>
+                <DialogContent>
+                    {/* {() => handleAlert(success, error)} */}
+                    <DialogContentText>
+                        Introduce chemical's data
+                    </DialogContentText>
+                    <List>
+                        <ListItem>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="name"
+                                label="Name"
+                                type="text"
+                                variant="standard"
+                                onChange={handleNameChange}
+                            />
+                        </ListItem>
+                        <ListItem>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="producer"
+                                label="Producer"
+                                type="text"
+                                variant="standard"
+                                onChange={handleProducerChange}
+                            />
+                        </ListItem>
+                        <ListItem>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="qty"
+                                label="Quantity"
+                                type="number"
+                                variant="standard"
+                                onChange={handleQtyChange}
+                            />
+                        </ListItem>
+                        <ListItem>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="price"
+                                label="Price"
+                                type="number"
+                                variant="standard"
+                                onChange={handlePriceChange}
+                            />
+                        </ListItem>
+                    </List>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseNew}>Cancel</Button>
+                    <Button onClick={newChemical}>Accept</Button>
                 </DialogActions>
             </Dialog>
         </>

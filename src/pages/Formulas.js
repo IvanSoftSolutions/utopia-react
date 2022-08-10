@@ -288,7 +288,7 @@ export default function Formulas() {
                 ingredientIds.map(i => {
                     let stockData = {
                         id: i,
-                        qty: Math.round(ingredientsTotal[i])
+                        qty: ingredientsTotal[i]
                     }
                     // console.log(stockData);
                     StockService.updateStock(stockData).then(response => {
@@ -417,16 +417,6 @@ export default function Formulas() {
 
     return (
         <>
-            {/* <Box sx={{ width: '100%' }}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
-                        <Tab label="Log/Report" {...a11yProps(0)} />
-                    </Tabs>
-                </Box>
-                <TabPanel value={value} index={0}>
-                    <LogReport />
-                </TabPanel>
-            </Box> */}
             {/* Input fields container */}
             <div className="formula-input" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '100%', maxWidth: 650, bgcolor: 'background.paper' }}>
                 <List >

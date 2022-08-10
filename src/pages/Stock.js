@@ -9,7 +9,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableFooter from '@mui/material/TableFooter';
 import TablePagination from '@mui/material/TablePagination';
+import TableSortLabel from '@mui/material/TableSortLabel';
 import TableRow from '@mui/material/TableRow';
+import { visuallyHidden } from '@mui/utils';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Button from '@mui/material/Button';
@@ -28,6 +30,7 @@ import Paper from '@mui/material/Paper';
 import { useState, useEffect } from 'react';
 
 import StockService from '../services/StockService';
+import InOutService from '../services/InOutService';
 
 function TablePaginationActions(props) {
     const theme = useTheme();
@@ -90,16 +93,162 @@ TablePaginationActions.propTypes = {
     rowsPerPage: PropTypes.number.isRequired,
 };
 
+function descendingComparator(a, b, orderBy) {
+    if (b[orderBy] < a[orderBy]) {
+        return -1;
+    }
+    if (b[orderBy] > a[orderBy]) {
+        return 1;
+    }
+    return 0;
+}
+
+function getComparator(order, orderBy) {
+    return order === 'desc'
+        ? (a, b) => descendingComparator(a, b, orderBy)
+        : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+// This method is created for cross-browser compatibility, if you don't
+// need to support IE11, you can use Array.prototype.sort() directly
+function stableSort(array, comparator) {
+    const stabilizedThis = array.map((el, index) => [el, index]);
+    stabilizedThis.sort((a, b) => {
+        const order = comparator(a[0], b[0]);
+        if (order !== 0) {
+            return order;
+        }
+        return a[1] - b[1];
+    });
+    return stabilizedThis.map((el) => el[0]);
+}
+
+const headCells = [
+    {
+        id: 'id',
+        numeric: true,
+        disablePadding: false,
+        label: 'Id',
+    },
+    {
+        id: 'name',
+        numeric: false,
+        disablePadding: false,
+        label: 'Name',
+    },
+    {
+        id: 'producer',
+        numeric: false,
+        disablePadding: false,
+        label: 'Producer',
+    },
+    {
+        id: 'presentation',
+        numeric: false,
+        disablePadding: false,
+        label: 'Presentation',
+    },
+    {
+        id: 'amount',
+        numeric: true,
+        disablePadding: false,
+        label: 'Amount',
+    },
+    {
+        id: 'weight',
+        numeric: true,
+        disablePadding: false,
+        label: 'Weight',
+    },
+    {
+        id: 'kg',
+        numeric: true,
+        disablePadding: false,
+        label: 'KG',
+    },
+    {
+        id: 'price',
+        numeric: true,
+        disablePadding: false,
+        label: 'Price',
+    },
+    {
+        id: 'total',
+        numeric: true,
+        disablePadding: false,
+        label: 'Total',
+    },
+    {
+        id: 'currency',
+        numeric: false,
+        disablePadding: false,
+        label: 'Currency',
+    }
+];
+
+function EnhancedTableHead(props) {
+    const { order, orderBy, onRequestSort } =
+        props;
+    const createSortHandler = (property) => (event) => {
+        onRequestSort(event, property);
+    };
+
+    return (
+        <TableHead>
+            <TableRow>
+                {headCells.map((headCell) => (
+                    <TableCell
+                        key={headCell.id}
+                        padding={headCell.disablePadding ? 'none' : 'normal'}
+                        sortDirection={orderBy === headCell.id ? order : false}
+                    >
+                        <TableSortLabel
+                            active={orderBy === headCell.id}
+                            direction={orderBy === headCell.id ? order : 'asc'}
+                            onClick={createSortHandler(headCell.id)}
+                        >
+                            {headCell.label}
+                            {orderBy === headCell.id ? (
+                                <Box component="span" sx={visuallyHidden}>
+                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                                </Box>
+                            ) : null}
+                        </TableSortLabel>
+                    </TableCell>
+                ))}
+            </TableRow>
+        </TableHead>
+    );
+}
+
+EnhancedTableHead.propTypes = {
+    numSelected: PropTypes.number.isRequired,
+    onRequestSort: PropTypes.func.isRequired,
+    onSelectAllClick: PropTypes.func.isRequired,
+    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+    orderBy: PropTypes.string.isRequired,
+    rowCount: PropTypes.number.isRequired,
+};
+
 export default function Stock() {
     const [rows, setRows] = useState([]);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const [open, setOpen] = React.useState(false);
     const [openNew, setOpenNew] = React.useState(false);
     const [name, setName] = React.useState('');
     const [producer, setProducer] = React.useState('');
     const [qty, setQty] = React.useState('');
     const [price, setPrice] = React.useState('');
+
+    const [order, setOrder] = React.useState('asc');
+    const [orderBy, setOrderBy] = React.useState('id');
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    const handleRequestSort = (event, property) => {
+        const isAsc = orderBy === property && order === 'asc';
+        setOrder(isAsc ? 'desc' : 'asc');
+        setOrderBy(property);
+    };
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -166,6 +315,22 @@ export default function Stock() {
                 console.log('nel')
             }
         })
+        let inOutData = {
+            date: new Date().toLocaleString(),
+            prodId: 0,
+            qty: qty,
+            InOrOut: 'In'
+        }
+        // console.log(inOutData);
+        InOutService.postInOutName(inOutData, name).then(response => {
+            if (response.data === 200) {
+                // console.log(response.data)
+            }
+        }).catch(function (error) {
+            if (error.response) {
+                console.log(error.response.data)
+            }
+        })
     }
 
     function newChemical() {
@@ -191,20 +356,16 @@ export default function Stock() {
         <>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell></TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Producer</TableCell>
-                            <TableCell>Quantity</TableCell>
-                            <TableCell>Price</TableCell>
-                            <TableCell>Total</TableCell>
-                        </TableRow>
-                    </TableHead>
+                    <EnhancedTableHead
+                        order={order}
+                        orderBy={orderBy}
+                        onRequestSort={handleRequestSort}
+                        rowCount={rows.length}
+                    />
                     <TableBody>
-                        {(rowsPerPage > 0
-                            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            : rows).map((row) => (
+                        {stableSort(rows, getComparator(order, orderBy))
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map((row) => (
                                 row.id === 1 ? <TableRow></TableRow> : row.id === 2 ? <TableRow></TableRow> :
                                     row.id === 999 ? <TableRow></TableRow> :
                                         <TableRow
@@ -214,9 +375,13 @@ export default function Stock() {
                                             <TableCell component="th" scope="row">{row.id}</TableCell>
                                             <TableCell>{row.pName}</TableCell>
                                             <TableCell>{row.producer}</TableCell>
+                                            <TableCell>{row.presentation}</TableCell>
                                             <TableCell>{row.qty}</TableCell>
+                                            <TableCell>{row.weight}</TableCell>
+                                            <TableCell>{row.kg}</TableCell>
                                             <TableCell>{row.price}</TableCell>
-                                            <TableCell>{row.qty * row.price}</TableCell>
+                                            <TableCell>{row.kg * row.price}</TableCell>
+                                            <TableCell>{row.currency}</TableCell>
                                         </TableRow>
                             ))}
                     </TableBody>

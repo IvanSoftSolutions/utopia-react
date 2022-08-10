@@ -9,6 +9,10 @@ class InOutServices {
     postInOut(data) {
         return http.post("/InOut/", data);
     }
+
+    postInOutName(data, pName) {
+        return http.post(`/InOut/AddByName?name=${pName}`, data);
+    }
 }
 
 export default new InOutServices();

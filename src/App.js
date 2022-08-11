@@ -11,6 +11,7 @@ import Stock from './pages/Stock';
 import InOut from './pages/InOut';
 import Shipment from './pages/Shipment';
 import HidesInv from './pages/HidesInv';
+import Engrases from './pages/Engrases';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -73,6 +74,7 @@ export default function BasicTabs() {
             <Tabs value={nestedValue} onChange={handleNestedChange} aria-label="basic tabs example">
               <Tab label="Search/Run" {...a11yProps(0)} />
               <Tab label="Log/Report" {...a11yProps(1)} />
+              {/* <Tab label="Engrases" {...a11yProps(2)} /> */}
             </Tabs>
           </Box>
           <TabPanel value={nestedValue} index={0}>
@@ -81,6 +83,9 @@ export default function BasicTabs() {
           <TabPanel value={nestedValue} index={1}>
             <LogReport />
           </TabPanel>
+          {/* <TabPanel value={nestedValue} index={2}>
+            <Engrases />
+          </TabPanel> */}
         </Box>
       </TabPanel>
       <TabPanel value={value} index={1}>

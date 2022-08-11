@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTheme } from '@mui/material/styles';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -33,8 +31,6 @@ import FirstPageIcon from '@mui/icons-material/FirstPage';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
-
-import LogReport from './LogReport';
 
 import FormulasService from '../services/FormulasService';
 import UserServices from '../services/UsuariosService';
@@ -466,7 +462,7 @@ export default function Formulas() {
                                 onChange={handlePalletChange}
                             >
                                 {palletRows.map((pallet) => (
-                                    <MenuItem value={pallet.id}>{pallet.id} {pallet.article}</MenuItem>
+                                    <MenuItem value={pallet.id}>{pallet.id} {pallet.article} {pallet.upoTruck}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>

@@ -645,7 +645,7 @@ export default function HidesInv() {
                 <Button variant='contained' onClick={handleClickOpen}>Agregar</Button>
             </div>
             <Dialog open={open} onClose={handleClose} >
-                <DialogTitle>Add chemical</DialogTitle>
+                <DialogTitle>Add pallet</DialogTitle>
                 <DialogContent >
                     {/* {() => handleAlert(success, error)} */}
                     <DialogContentText>

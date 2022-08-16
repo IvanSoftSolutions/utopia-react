@@ -74,7 +74,7 @@ export default function BasicTabs() {
             <Tabs value={nestedValue} onChange={handleNestedChange} aria-label="basic tabs example">
               <Tab label="Search/Run" {...a11yProps(0)} />
               <Tab label="Log/Report" {...a11yProps(1)} />
-              {/* <Tab label="Engrases" {...a11yProps(2)} /> */}
+              <Tab label="Engrases" {...a11yProps(2)} />
             </Tabs>
           </Box>
           <TabPanel value={nestedValue} index={0}>
@@ -83,9 +83,9 @@ export default function BasicTabs() {
           <TabPanel value={nestedValue} index={1}>
             <LogReport />
           </TabPanel>
-          {/* <TabPanel value={nestedValue} index={2}>
+          <TabPanel value={nestedValue} index={2}>
             <Engrases />
-          </TabPanel> */}
+          </TabPanel>
         </Box>
       </TabPanel>
       <TabPanel value={value} index={1}>

@@ -131,6 +131,18 @@ const headCells = [
         label: 'Id',
     },
     {
+        id: 'pallet',
+        numeric: true,
+        disablePadding: false,
+        label: 'Pallet',
+    },
+    {
+        id: 'upoTruck',
+        numeric: false,
+        disablePadding: false,
+        label: 'UPO/Truck',
+    },
+    {
         id: 'article',
         numeric: false,
         disablePadding: false,
@@ -196,12 +208,7 @@ const headCells = [
         disablePadding: false,
         label: 'Ubicacion',
     },
-    {
-        id: 'pallet',
-        numeric: true,
-        disablePadding: false,
-        label: 'Pallet',
-    },
+
     {
         id: 'location',
         numeric: false,
@@ -221,58 +228,10 @@ const headCells = [
         label: 'Pieces x Cost',
     },
     {
-        id: 'fungus',
-        numeric: false,
-        disablePadding: false,
-        label: 'Fungus',
-    },
-    {
-        id: 'shaved',
-        numeric: false,
-        disablePadding: false,
-        label: 'Shaved',
-    },
-    {
-        id: 'thickness',
-        numeric: false,
-        disablePadding: false,
-        label: 'Thickness',
-    },
-    {
-        id: 'washed',
-        numeric: false,
-        disablePadding: false,
-        label: 'Washed',
-    },
-    {
-        id: 'rejects',
-        numeric: false,
-        disablePadding: false,
-        label: 'Rejects',
-    },
-    {
-        id: 'isPallet',
-        numeric: false,
-        disablePadding: false,
-        label: 'Is It Really The Pallet At Warehouse A/B?',
-    },
-    {
-        id: 'upoTruck',
-        numeric: false,
-        disablePadding: false,
-        label: 'UPO/Truck',
-    },
-    {
         id: 'date',
         numeric: false,
         disablePadding: false,
         label: 'Date',
-    },
-    {
-        id: 'reviewer',
-        numeric: false,
-        disablePadding: false,
-        label: 'Reviewer',
     },
     {
         id: 'observations',
@@ -280,18 +239,6 @@ const headCells = [
         disablePadding: false,
         label: 'Observations',
     },
-    {
-        id: 'modificationSales',
-        numeric: false,
-        disablePadding: false,
-        label: 'Modification/Sales',
-    },
-    {
-        id: 'reviewed',
-        numeric: false,
-        disablePadding: false,
-        label: 'Reviewed',
-    }
 ];
 
 function EnhancedTableHead(props) {
@@ -588,6 +535,8 @@ export default function HidesInv() {
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                 >
                                     <TableCell>{row.id}</TableCell>
+                                    <TableCell>{row.pallet}</TableCell>
+                                    <TableCell>{row.upoTruck}</TableCell>
                                     <TableCell>{row.article}</TableCell>
                                     <TableCell>{row.color}</TableCell>
                                     <TableCell>{row.type}</TableCell>
@@ -599,22 +548,11 @@ export default function HidesInv() {
                                     <TableCell>{row.total}</TableCell>
                                     <TableCell>{row.grade}</TableCell>
                                     <TableCell>{row.ubicacion}</TableCell>
-                                    <TableCell>{row.pallet}</TableCell>
                                     <TableCell>{row.location}</TableCell>
                                     <TableCell>{row.costHide}</TableCell>
                                     <TableCell>{row.piecesxcost}</TableCell>
-                                    <TableCell>{row.fungus}</TableCell>
-                                    <TableCell>{row.shaved}</TableCell>
-                                    <TableCell>{row.thickness}</TableCell>
-                                    <TableCell>{row.washed}</TableCell>
-                                    <TableCell>{row.rejects}</TableCell>
-                                    <TableCell>{row.isPallet}</TableCell>
-                                    <TableCell>{row.upoTruck}</TableCell>
                                     <TableCell>{row.date}</TableCell>
-                                    <TableCell>{row.reviewer}</TableCell>
                                     <TableCell>{row.observations}</TableCell>
-                                    <TableCell>{row.modificationSales}</TableCell>
-                                    <TableCell>{row.reviewed}</TableCell>
                                 </TableRow>
                             ))}
                     </TableBody>

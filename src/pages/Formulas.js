@@ -139,7 +139,7 @@ export default function Formulas() {
     const [color, setColor] = React.useState('');
     const [weight, setWeight] = React.useState(0);
     const [thickness, setThickness] = React.useState('');
-    const [material, setMaterial] = React.useState('');
+    const [material, setMaterial] = React.useState('Material');
     const [details, setDetails] = React.useState('');
     const [pallet, setPallet] = React.useState(0);
     const [user, setUser] = React.useState('');
@@ -153,16 +153,13 @@ export default function Formulas() {
     const [error, setError] = React.useState(false);
     const [axiosError, setAxiosError] = React.useState(false);
     const [stockError, setStockError] = React.useState(false);
+    const [regex, setRegex] = React.useState(false);
     const [requiredError, setRequiredError] = React.useState(false);
     const [stockAuth, setStockAuth] = React.useState(false);
+    const re = /^\d\.\d\-\d\.\d$/
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-    const [value, setValue] = React.useState(0);
-    const handleChange = (event, newValue) => {
-        setValue(newValue);
-    };
 
     // Avoid a layout jump when reaching the last page with empty rows.
     // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
@@ -409,6 +406,7 @@ export default function Formulas() {
 
     const handlePalletChange = (event) => {
         setPallet(event.target.value);
+        setMaterial(event.target.value.kind);
     }
 
     return (
@@ -462,7 +460,7 @@ export default function Formulas() {
                                 onChange={handlePalletChange}
                             >
                                 {palletRows.map((pallet) => (
-                                    <MenuItem value={pallet.id}>{pallet.id} {pallet.article} {pallet.upoTruck}</MenuItem>
+                                    <MenuItem value={pallet}>{pallet.id} {pallet.article} {pallet.upoTruck}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
@@ -479,7 +477,7 @@ export default function Formulas() {
                     </ListItem>
                     {/* Material */}
                     <ListItem disablePadding>
-                        <TextField required id="outlined-basic" label="Material" onChange={handleMaterialChange} variant="outlined" margin='dense' />
+                        <TextField disabled id="outlined-basic" placeholder={material} value={material} variant="outlined" margin='dense' />
                     </ListItem>
                     {/* Details */}
                     <ListItem disablePadding>
@@ -497,9 +495,12 @@ export default function Formulas() {
                     <Button variant='contained' onClick={() => {
                         if (weight === 0 || thickness === '' || material === '' || article === '' || color === '' || pallet === 0) {
                             setRequiredError(true);
-                        } else {
+                        } else if (re.test(thickness)) {
                             setRequiredError(false);
+                            setRegex(false);
                             handleClickOpen();
+                        } else {
+                            setRegex(true);
                         }
 
                     }} >Aceptar</Button>
@@ -509,6 +510,7 @@ export default function Formulas() {
                 {axiosError ? <Alert severity='error'>No registered formula for that 'Article Color' pair</Alert> : <></>}
                 {stockError ? <Alert severity='error'>There is not enough chemicals stock to run this formula</Alert> : <></>}
                 {requiredError ? <Alert severity='error'>Please fill all the required input fields</Alert> : <></>}
+                {regex ? <Alert severity='error'>Apartado "Thickness" no tiene el formato correcto</Alert> : <></>}
                 {success ? <Alert severity='success'>Formula info successfully stored in database</Alert> : <></>}
                 {/* Auth Dialog Container */}
                 <Dialog open={open} onClose={handleClose}>

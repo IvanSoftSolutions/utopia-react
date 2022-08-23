@@ -1,17 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableFooter from '@mui/material/TableFooter';
-import TablePagination from '@mui/material/TablePagination';
-import TableSortLabel from '@mui/material/TableSortLabel';
-import TableRow from '@mui/material/TableRow';
-import { visuallyHidden } from '@mui/utils';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Button from '@mui/material/Button';
@@ -25,362 +13,205 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
-import FirstPageIcon from '@mui/icons-material/FirstPage';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import LastPageIcon from '@mui/icons-material/LastPage';
-import Paper from '@mui/material/Paper';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useState, useEffect } from 'react';
 
 import EngrasesService from '../services/EngrasesService';
 
-function TablePaginationActions(props) {
-    const theme = useTheme();
-    const { count, page, rowsPerPage, onPageChange } = props;
-
-    const handleFirstPageButtonClick = (event) => {
-        onPageChange(event, 0);
-    };
-
-    const handleBackButtonClick = (event) => {
-        onPageChange(event, page - 1);
-    };
-
-    const handleNextButtonClick = (event) => {
-        onPageChange(event, page + 1);
-    };
-
-    const handleLastPageButtonClick = (event) => {
-        onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-    };
-
-    return (
-        <Box sx={{ flexShrink: 0, ml: 2.5 }}>
-            <IconButton
-                onClick={handleFirstPageButtonClick}
-                disabled={page === 0}
-                aria-label="first page"
-            >
-                {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
-            </IconButton>
-            <IconButton
-                onClick={handleBackButtonClick}
-                disabled={page === 0}
-                aria-label="previous page"
-            >
-                {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-            </IconButton>
-            <IconButton
-                onClick={handleNextButtonClick}
-                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                aria-label="next page"
-            >
-                {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-            </IconButton>
-            <IconButton
-                onClick={handleLastPageButtonClick}
-                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                aria-label="last page"
-            >
-                {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
-            </IconButton>
-        </Box>
-    );
-}
-
-TablePaginationActions.propTypes = {
-    count: PropTypes.number.isRequired,
-    onPageChange: PropTypes.func.isRequired,
-    page: PropTypes.number.isRequired,
-    rowsPerPage: PropTypes.number.isRequired,
-};
-
-function descendingComparator(a, b, orderBy) {
-    if (b[orderBy] < a[orderBy]) {
-        return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-        return 1;
-    }
-    return 0;
-}
-
-function getComparator(order, orderBy) {
-    return order === 'desc'
-        ? (a, b) => descendingComparator(a, b, orderBy)
-        : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
-function stableSort(array, comparator) {
-    const stabilizedThis = array.map((el, index) => [el, index]);
-    stabilizedThis.sort((a, b) => {
-        const order = comparator(a[0], b[0]);
-        if (order !== 0) {
-            return order;
-        }
-        return a[1] - b[1];
-    });
-    return stabilizedThis.map((el) => el[0]);
-}
-
 const headCells = [
     {
-        id: 'editBtn',
-        numeric: false,
-        disablePadding: false,
-        label: 'Action',
+        field: 'id',
+        width: 150,
+        headerName: 'Id',
     },
     {
-        id: 'id',
-        numeric: true,
-        disablePadding: false,
-        label: 'Id',
+        field: 'fechaEngrase',
+        width: 150,
+        headerName: 'Fecha Engrase',
     },
     {
-        id: 'fechaEngrase',
-        numeric: false,
-        disablePadding: false,
-        label: 'Fecha Engrase',
+        field: 'nCarga',
+        width: 150,
+        headerName: 'Numero Carga',
     },
     {
-        id: 'nCarga',
-        numeric: false,
-        disablePadding: false,
-        label: 'Numero Carga',
+        field: 'cuero',
+        width: 150,
+        headerName: 'Cuero',
     },
     {
-        id: 'cuero',
-        numeric: false,
-        disablePadding: false,
-        label: 'Cuero',
+        field: 'camionPartida',
+        width: 150,
+        headerName: 'Camion/Partida',
     },
     {
-        id: 'camionPartida',
-        numeric: false,
-        disablePadding: false,
-        label: 'Camion/Partida',
+        field: 'kg',
+        width: 150,
+        headerName: 'KG',
     },
     {
-        id: 'kg',
-        numeric: true,
-        disablePadding: false,
-        label: 'KG',
+        field: 'piezas',
+        width: 150,
+        headerName: 'Piezas',
     },
     {
-        id: 'piezas',
-        numeric: true,
-        disablePadding: false,
-        label: 'Piezas',
+        field: 'material',
+        width: 150,
+        headerName: 'Material',
     },
     {
-        id: 'material',
-        numeric: false,
-        disablePadding: false,
-        label: 'Material',
+        field: 'calibre',
+        width: 150,
+        headerName: 'Calibre',
     },
     {
-        id: 'calibre',
-        numeric: false,
-        disablePadding: false,
-        label: 'Calibre',
+        field: 'linea',
+        width: 150,
+        headerName: 'Linea',
     },
     {
-        id: 'linea',
-        numeric: false,
-        disablePadding: false,
-        label: 'Linea',
+        field: 'color',
+        width: 150,
+        headerName: 'Color',
     },
     {
-        id: 'color',
-        numeric: false,
-        disablePadding: false,
-        label: 'Color',
+        field: 'fechaSecado',
+        width: 150,
+        headerName: 'Fecha Secado',
     },
     {
-        id: 'fechaSecado',
-        numeric: false,
-        disablePadding: false,
-        label: 'Fecha Secado',
+        field: 'korona',
+        width: 150,
+        headerName: 'Korona',
+        editable: true
     },
     {
-        id: 'Korona',
-        numeric: false,
-        disablePadding: false,
-        label: 'Korona',
+        field: 'engraseSeco',
+        width: 150,
+        headerName: 'Engrase Seco',
+        editable: true
     },
     {
-        id: 'EngraseSeco',
-        numeric: false,
-        disablePadding: false,
-        label: 'Engrase Seco',
+        field: 'escurrir',
+        width: 150,
+        headerName: 'Escurrir',
+        editable: true
     },
     {
-        id: 'Escurrir',
-        numeric: false,
-        disablePadding: false,
-        label: 'Escurrir',
+        field: 'desvenado',
+        width: 150,
+        headerName: 'Desvenado',
+        editable: true
     },
     {
-        id: 'Desvenado',
-        numeric: false,
-        disablePadding: false,
-        label: 'Desvenado',
+        field: 'bauce',
+        width: 150,
+        headerName: 'Bauce',
+        editable: true
     },
     {
-        id: 'Bauce',
-        numeric: false,
-        disablePadding: false,
-        label: 'Bauce',
+        field: 'vacio',
+        width: 150,
+        headerName: 'Vacio',
+        editable: true
     },
     {
-        id: 'Vacio',
-        numeric: false,
-        disablePadding: false,
-        label: 'Vacio',
+        field: 'taic',
+        width: 150,
+        headerName: 'Taic',
+        editable: true
     },
     {
-        id: 'Taic',
-        numeric: false,
-        disablePadding: false,
-        label: 'Taic',
+        field: 'aereo',
+        width: 150,
+        headerName: 'Aereo',
+        editable: true
     },
     {
-        id: 'Aereo',
-        numeric: false,
-        disablePadding: false,
-        label: 'Aereo',
+        field: 'toggling',
+        width: 150,
+        headerName: 'Toggling',
+        editable: true
     },
     {
-        id: 'Toggling',
-        numeric: false,
-        disablePadding: false,
-        label: 'Toggling',
+        field: 'ablandado',
+        width: 150,
+        headerName: 'Ablandado',
+        editable: true
     },
     {
-        id: 'Ablandado',
-        numeric: false,
-        disablePadding: false,
-        label: 'Ablandado',
+        field: 'pulido',
+        width: 150,
+        headerName: 'Pulido',
+        editable: true
     },
     {
-        id: 'Pulido',
-        numeric: false,
-        disablePadding: false,
-        label: 'Pulido',
+        field: 'abatanado',
+        width: 150,
+        headerName: 'Abatanado',
+        editable: true
     },
     {
-        id: 'Abatanado',
-        numeric: false,
-        disablePadding: false,
-        label: 'Abatanado',
+        field: 'vacio2',
+        width: 150,
+        headerName: 'Vacio',
+        editable: true
     },
     {
-        id: 'Vacio2',
-        numeric: false,
-        disablePadding: false,
-        label: 'Vacio',
+        field: 'pistolas',
+        width: 150,
+        headerName: 'Pistolas',
+        editable: true
     },
     {
-        id: 'Pistolas',
-        numeric: false,
-        disablePadding: false,
-        label: 'Pistolas',
+        field: 'roller',
+        width: 150,
+        headerName: 'Roller',
+        editable: true
     },
     {
-        id: 'Roller',
-        numeric: false,
-        disablePadding: false,
-        label: 'Roller',
+        field: 'finilux',
+        width: 150,
+        headerName: 'Finilux',
+        editable: true
     },
     {
-        id: 'Finilux',
-        numeric: false,
-        disablePadding: false,
-        label: 'Finilux',
+        field: 'rotoprex',
+        width: 150,
+        headerName: 'Rotoprex',
+        editable: true
     },
     {
-        id: 'Rotoprex',
-        numeric: false,
-        disablePadding: false,
-        label: 'Rotoprex',
+        field: 'partido',
+        width: 150,
+        headerName: 'Partido',
+        editable: true
     },
     {
-        id: 'Partido',
-        numeric: false,
-        disablePadding: false,
-        label: 'Partido',
+        field: 'grabado',
+        width: 150,
+        headerName: 'Grabado',
+        editable: true
     },
     {
-        id: 'Grabado',
-        numeric: false,
-        disablePadding: false,
-        label: 'Grabado',
+        field: 'envioPlanta',
+        width: 150,
+        headerName: 'Envio Planta',
+        editable: true
     },
     {
-        id: 'EnvioPlanta',
-        numeric: false,
-        disablePadding: false,
-        label: 'Envio Planta',
+        field: 'fechaFactura',
+        width: 150,
+        headerName: 'Fecha Factura',
+        editable: true
     },
     {
-        id: 'FechaFactura',
-        numeric: false,
-        disablePadding: false,
-        label: 'Fecha Factura',
-    },
-    {
-        id: 'NumeroFactura',
-        numeric: false,
-        disablePadding: false,
-        label: 'Numero Factura',
+        field: 'numeroFactura',
+        width: 150,
+        headerName: 'Numero Factura',
+        editable: true
     }
 ];
-
-function EnhancedTableHead(props) {
-    const { order, orderBy, onRequestSort } =
-        props;
-    const createSortHandler = (property) => (event) => {
-        onRequestSort(event, property);
-    };
-
-    return (
-        <TableHead>
-            <TableRow>
-                {headCells.map((headCell) => (
-                    <TableCell
-                        key={headCell.id}
-                        padding={headCell.disablePadding ? 'none' : 'normal'}
-                        sortDirection={orderBy === headCell.id ? order : false}
-                    >
-                        <TableSortLabel
-                            active={orderBy === headCell.id}
-                            direction={orderBy === headCell.id ? order : 'asc'}
-                            onClick={createSortHandler(headCell.id)}
-                        >
-                            {headCell.label}
-                            {orderBy === headCell.id ? (
-                                <Box component="span" sx={visuallyHidden}>
-                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                </Box>
-                            ) : null}
-                        </TableSortLabel>
-                    </TableCell>
-                ))}
-            </TableRow>
-        </TableHead>
-    );
-}
-
-EnhancedTableHead.propTypes = {
-    onRequestSort: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-    orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired,
-};
 
 export default function Engrases() {
     const [rows, setRows] = useState([]);
@@ -423,28 +254,6 @@ export default function Engrases() {
     const [envioPlanta, setEnvioPlanta] = React.useState('');
     const [fechaFactura, setFechaFactura] = React.useState('');
     const [numeroFactura, setNumeroFactura] = React.useState('');
-
-
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('id');
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const engrasesColumns = headCells.slice(13);
-
-    const handleRequestSort = (event, property) => {
-        const isAsc = orderBy === property && order === 'asc';
-        setOrder(isAsc ? 'desc' : 'asc');
-        setOrderBy(property);
-    };
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
 
     useEffect((rows) => {
         EngrasesService.getEngrases().then(response => {
@@ -613,12 +422,15 @@ export default function Engrases() {
         setNumeroFactura(event.target.value);
     };
 
-    function updateEngrase() {
+    function updateEngrase(params, event) {
+        let x = params.field;
+        let value = x.charAt(0).toUpperCase() + x.slice(1);
         let data = {
-            id: engraseId,
-            column: column,
-            value: columnValue
+            id: params.id,
+            column: value,
+            value: event.target.value
         }
+        // console.log(data);
         EngrasesService.engraseUpdate(data).then(response => {
             if (response.status === 200) {
                 console.log(response);
@@ -680,82 +492,16 @@ export default function Engrases() {
 
     return (
         <>
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
-                    <EnhancedTableHead
-                        order={order}
-                        orderBy={orderBy}
-                        onRequestSort={handleRequestSort}
-                        rowCount={rows.length}
-                    />
-                    <TableBody>
-                        {stableSort(rows, getComparator(order, orderBy))
-                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            .map((row) => (
-                                <TableRow
-                                    key={row.id}
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                >
-                                    <Button variant="contained" onClick={() => handleClickOpen(row.id)}>Edit</Button>
-                                    <TableCell component="th" scope="row">{row.id}</TableCell>
-                                    <TableCell>{row.fechaEngrase}</TableCell>
-                                    <TableCell>{row.nCarga}</TableCell>
-                                    <TableCell>{row.cuero}</TableCell>
-                                    <TableCell>{row.camionPartida}</TableCell>
-                                    <TableCell>{row.kg}</TableCell>
-                                    <TableCell>{row.piezas}</TableCell>
-                                    <TableCell>{row.material}</TableCell>
-                                    <TableCell>{row.calibre}</TableCell>
-                                    <TableCell>{row.linea}</TableCell>
-                                    <TableCell>{row.color}</TableCell>
-                                    <TableCell>{row.fechaSecado}</TableCell>
-                                    <TableCell>{row.korona}</TableCell>
-                                    <TableCell>{row.engraseSeco}</TableCell>
-                                    <TableCell>{row.escurrir}</TableCell>
-                                    <TableCell>{row.desvenado}</TableCell>
-                                    <TableCell>{row.bauce}</TableCell>
-                                    <TableCell>{row.vacio}</TableCell>
-                                    <TableCell>{row.taic}</TableCell>
-                                    <TableCell>{row.aereo}</TableCell>
-                                    <TableCell>{row.toggling}</TableCell>
-                                    <TableCell>{row.ablandado}</TableCell>
-                                    <TableCell>{row.pulido}</TableCell>
-                                    <TableCell>{row.abatanado}</TableCell>
-                                    <TableCell>{row.vacio2}</TableCell>
-                                    <TableCell>{row.pistolas}</TableCell>
-                                    <TableCell>{row.roller}</TableCell>
-                                    <TableCell>{row.finilux}</TableCell>
-                                    <TableCell>{row.rotoprex}</TableCell>
-                                    <TableCell>{row.partido}</TableCell>
-                                    <TableCell>{row.grabado}</TableCell>
-                                    <TableCell>{row.envioPlanta}</TableCell>
-                                    <TableCell>{row.fechaFactura}</TableCell>
-                                    <TableCell>{row.numeroFactura}</TableCell>
-                                </TableRow>
-                            ))}
-                    </TableBody>
-                    <TableFooter>
-                        <TableRow>
-                            <TablePagination
-                                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                                colSpan={8}
-                                count={rows.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                SelectProps={{
-                                    inputProps: {
-                                        'aria-label': 'rows per page',
-                                    },
-                                    native: true,
-                                }}
-                                onPageChange={handleChangePage}
-                                onRowsPerPageChange={handleChangeRowsPerPage}
-                                ActionsComponent={TablePaginationActions}
-                            />
-                        </TableRow>
-                    </TableFooter>
-                </Table>
-            </TableContainer>
+            <Box sx={{ height: 500, width: '100%' }}>
+                <DataGrid
+                    rows={rows}
+                    columns={headCells}
+                    components={{ Toolbar: GridToolbar }}
+                    experimentalFeatures={{ newEditingApi: true }}
+                    onCellEditStop={(params, event) => {
+                        updateEngrase(params, event)
+                    }} />
+            </Box>
             <Button variant="contained" onClick={handleOpenNew}>Nuevo Engrase</Button>
             <Dialog open={open} onClose={handleClose} >
                 <DialogTitle>Editar informacion de engrase</DialogTitle>
@@ -765,7 +511,7 @@ export default function Engrases() {
                         Elige la columna que quieres editar
                     </DialogContentText>
                     <List>
-                        <ListItem>
+                        {/* <ListItem>
                             <FormControl required margin='dense' sx={{ width: '100%' }}>
                                 <InputLabel id="demo-simple-select-label">Name</InputLabel>
                                 <Select
@@ -780,7 +526,7 @@ export default function Engrases() {
                                     ))}
                                 </Select>
                             </FormControl>
-                        </ListItem>
+                        </ListItem> */}
                         <ListItem>
                             <TextField
                                 autoFocus

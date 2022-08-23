@@ -156,7 +156,7 @@ export default function Formulas() {
     const [regex, setRegex] = React.useState(false);
     const [requiredError, setRequiredError] = React.useState(false);
     const [stockAuth, setStockAuth] = React.useState(false);
-    const re = /^\d\.\d\-\d\.\d$/
+    const re = /^\d\.\d-\d\.\d$/
 
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -394,10 +394,6 @@ export default function Formulas() {
 
     const handleThicknessChange = (event) => {
         setThickness(event.target.value);
-    };
-
-    const handleMaterialChange = (event) => {
-        setMaterial(event.target.value);
     };
 
     const handleDetailsChange = (event) => {

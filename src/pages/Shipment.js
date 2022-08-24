@@ -27,6 +27,7 @@ export default function Shipment() {
     const [openShipment, setOpenShipment] = useState(false);
     const [dateShipment, setDateShipment] = useState('');
     const [serial, setSerial] = useState(0);
+    const [nFactura, setNFactura] = useState('');
     const [details, setDetails] = useState('');
     const [id, setId] = useState(0);
     const [aux, setAux] = useState(false);
@@ -67,7 +68,8 @@ export default function Shipment() {
             shipped: 1,
             shipDate: dateShipment.toString(),
             received: 0,
-            arriveDate: ''
+            arriveDate: '',
+            nFactura: nFactura
         }
         console.log(data);
         ShipmentService.postShipment(data).then(response => {
@@ -116,6 +118,10 @@ export default function Shipment() {
         setSerial(event.target.value);
     };
 
+    const handleNFacturaChange = (event) => {
+        setNFactura(event.target.value);
+    };
+
     const handleDetailsChange = (event) => {
         setDetails(event.target.value);
     };
@@ -133,6 +139,7 @@ export default function Shipment() {
                         <TableRow>
                             <TableCell>Id</TableCell>
                             <TableCell>Serial Number</TableCell>
+                            <TableCell>Numero de Factura</TableCell>
                             <TableCell>Details</TableCell>
                             <TableCell>Shipped</TableCell>
                             <TableCell>Shipping Date</TableCell>
@@ -148,6 +155,7 @@ export default function Shipment() {
                             >
                                 <TableCell component="th" scope="row">{row.id}</TableCell>
                                 <TableCell>{row.sNumber}</TableCell>
+                                <TableCell>{row.nFactura}</TableCell>
                                 <TableCell>{row.details}</TableCell>
                                 <Checkbox disabled={Boolean(row.shipped)} defaultChecked color="default" />
                                 <TableCell>{row.shipDate}</TableCell>
@@ -185,6 +193,17 @@ export default function Shipment() {
                                 label="Serial Number"
                                 variant="standard"
                                 onChange={handleSerialChange}
+                            />
+                        </ListItem>
+                        <ListItem>
+                            <TextField
+                                autoFocus
+                                margin="dense"
+                                id="nFactura"
+                                label="Numero Factura"
+                                type="text"
+                                variant="standard"
+                                onChange={handleNFacturaChange}
                             />
                         </ListItem>
                         <ListItem>

@@ -1,17 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useTheme } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableFooter from '@mui/material/TableFooter';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
@@ -26,11 +16,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Alert from '@mui/material/Alert';
-import IconButton from '@mui/material/IconButton';
-import FirstPageIcon from '@mui/icons-material/FirstPage';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import LastPageIcon from '@mui/icons-material/LastPage';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 
 import FormulasService from '../services/FormulasService';
 import UserServices from '../services/UsuariosService';
@@ -39,67 +25,6 @@ import StockService from '../services/StockService';
 import ArticleService from '../services/ArticleService';
 import ColorService from '../services/ColorService';
 import HidesInvService from '../services/HidesInvService';
-
-function TablePaginationActions(props) {
-    const theme = useTheme();
-    const { count, page, rowsPerPage, onPageChange } = props;
-
-    const handleFirstPageButtonClick = (event) => {
-        onPageChange(event, 0);
-    };
-
-    const handleBackButtonClick = (event) => {
-        onPageChange(event, page - 1);
-    };
-
-    const handleNextButtonClick = (event) => {
-        onPageChange(event, page + 1);
-    };
-
-    const handleLastPageButtonClick = (event) => {
-        onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
-    };
-
-    return (
-        <Box sx={{ flexShrink: 0, ml: 2.5 }}>
-            <IconButton
-                onClick={handleFirstPageButtonClick}
-                disabled={page === 0}
-                aria-label="first page"
-            >
-                {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
-            </IconButton>
-            <IconButton
-                onClick={handleBackButtonClick}
-                disabled={page === 0}
-                aria-label="previous page"
-            >
-                {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-            </IconButton>
-            <IconButton
-                onClick={handleNextButtonClick}
-                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                aria-label="next page"
-            >
-                {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-            </IconButton>
-            <IconButton
-                onClick={handleLastPageButtonClick}
-                disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-                aria-label="last page"
-            >
-                {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
-            </IconButton>
-        </Box>
-    );
-}
-
-TablePaginationActions.propTypes = {
-    count: PropTypes.number.isRequired,
-    onPageChange: PropTypes.func.isRequired,
-    page: PropTypes.number.isRequired,
-    rowsPerPage: PropTypes.number.isRequired,
-};
 
 function TabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -127,13 +52,6 @@ TabPanel.propTypes = {
     value: PropTypes.number.isRequired,
 };
 
-function a11yProps(index) {
-    return {
-        id: `simple-tab-${index}`,
-        'aria-controls': `simple-tabpanel-${index}`,
-    };
-}
-
 export default function Formulas() {
     const [article, setArticle] = React.useState('');
     const [color, setColor] = React.useState('');
@@ -157,21 +75,6 @@ export default function Formulas() {
     const [requiredError, setRequiredError] = React.useState(false);
     const [stockAuth, setStockAuth] = React.useState(false);
     const re = /^\d\.\d-\d\.\d$/
-
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-    // Avoid a layout jump when reaching the last page with empty rows.
-    // const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-
-    const handleChangePage = (event, newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
 
     React.useEffect((articleRows, colorRows, palletRows) => {
         ArticleService.getArticles().then(response => {
@@ -405,6 +308,109 @@ export default function Formulas() {
         setMaterial(event.target.value.kind);
     }
 
+    function getQty(params) {
+        if (params.row.pName === 'DRENAR' || params.row.pName === 'OBSERVATIONS') {
+            return ('');
+        } else {
+            return (params.row.percentage * weight / 100)
+        }
+    }
+
+    function getProduct(params) {
+        if (params.row.pName === 'OBSERVATIONS') {
+            return ('');
+        } else {
+            return (params.row.pName)
+        }
+    }
+
+    function handleLastRow(params) {
+        if (params.row.pName === 'OBSERVATIONS') {
+            return (params.row.observations);
+        } else {
+            return (params.row.percentage);
+        }
+    }
+
+    function handleObservations(params) {
+        if (params.row.prodId === 999) {
+            return ('');
+        } else {
+            return (params.row.observations);
+        }
+    }
+
+    const headCells = [
+        {
+            field: 'percentage',
+            width: 110,
+            headerName: 'Percentage %',
+            valueGetter: handleLastRow,
+            sortable: false,
+            filterable: false,
+            // align: 'right',
+            colSpan: ({ row }) => {
+                if (row.prodId === 999) {
+                    return 6;
+                } else {
+                    return undefined;
+                }
+            }
+        },
+        {
+            field: 'quantity',
+            width: 100,
+            headerName: 'Quantity',
+            valueGetter: getQty,
+            sortable: false,
+            filterable: false,
+        },
+        {
+            field: 'pName',
+            width: 250,
+            headerName: 'Product',
+            valueGetter: getProduct,
+            sortable: false,
+            filterable: false,
+        },
+        {
+            field: 'temp',
+            width: 100,
+            headerName: 'Temp (C°)',
+            sortable: false,
+            filterable: false,
+        },
+        {
+            field: 'time',
+            width: 100,
+            headerName: 'Time (min)',
+            sortable: false,
+            filterable: false,
+        },
+        {
+            field: 'ph',
+            width: 100,
+            headerName: 'pH',
+            sortable: false,
+            filterable: false,
+        },
+        {
+            field: 'cut',
+            width: 100,
+            headerName: '#Cut',
+            sortable: false,
+            filterable: false,
+        },
+        {
+            field: 'observations',
+            width: 800,
+            headerName: 'Observations',
+            valueGetter: handleObservations,
+            sortable: false,
+            filterable: false,
+        }
+    ]
+
     return (
         <>
             {/* Input fields container */}
@@ -551,67 +557,17 @@ export default function Formulas() {
                 </Dialog>
             </div>
             {/* Table container */}
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Percentage %</TableCell>
-                            <TableCell>Quantity</TableCell>
-                            <TableCell>Product</TableCell>
-                            <TableCell>Temp (C°)</TableCell>
-                            <TableCell>Time (min)</TableCell>
-                            <TableCell>pH</TableCell>
-                            <TableCell>#Cut</TableCell>
-                            <TableCell>Observations</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {(rowsPerPage > 0
-                            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                            : rows).map((row) => (
-                                row.prodId === 999 ?
-                                    <TableRow>
-                                        <TableCell colSpan='8'>
-                                            {row.observations}
-                                        </TableCell>
-                                    </TableRow> :
-                                    <TableRow
-                                        key={row.id}
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                    >
-                                        <TableCell>{row.percentage}</TableCell>
-                                        {(row.prodId === 2) ? <TableCell></TableCell> : <TableCell>{((weight) * (row.percentage)) / 100}</TableCell>}
-                                        <TableCell>{row.pName}</TableCell>
-                                        <TableCell>{row.temp}</TableCell>
-                                        <TableCell>{row.time}</TableCell>
-                                        <TableCell>{row.ph}</TableCell>
-                                        <TableCell>{row.cut}</TableCell>
-                                        {row.prodId === 999 ? <TableCell></TableCell> : <TableCell>{row.observations}</TableCell>}
-                                    </TableRow>
-                            ))}
-                    </TableBody>
-                    <TableFooter>
-                        <TableRow>
-                            <TablePagination
-                                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                                colSpan={4}
-                                count={rows.length}
-                                rowsPerPage={rowsPerPage}
-                                page={page}
-                                SelectProps={{
-                                    inputProps: {
-                                        'aria-label': 'rows per page',
-                                    },
-                                    native: true,
-                                }}
-                                onPageChange={handleChangePage}
-                                onRowsPerPageChange={handleChangeRowsPerPage}
-                                ActionsComponent={TablePaginationActions}
-                            />
-                        </TableRow>
-                    </TableFooter>
-                </Table>
-            </TableContainer>
+            <Box sx={{ height: 500, width: '100%' }}>
+                <DataGrid
+                    rows={rows}
+                    columns={headCells}
+                    components={{ Toolbar: GridToolbar }}
+                    disableColumnFilter
+                    disableColumnMenu
+                    disableColumnSelector
+                    hideFooterSelectedRowCount
+                />
+            </Box>
         </>
     )
 }

@@ -1,13 +1,9 @@
 import React from 'react';
 import Box from '@mui/material/Box';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -18,208 +14,9 @@ import { useState, useEffect } from 'react';
 
 import EngrasesService from '../services/EngrasesService';
 
-const headCells = [
-    {
-        field: 'id',
-        width: 150,
-        headerName: 'Id',
-    },
-    {
-        field: 'fechaEngrase',
-        width: 150,
-        headerName: 'Fecha Engrase',
-    },
-    {
-        field: 'nCarga',
-        width: 150,
-        headerName: 'Numero Carga',
-    },
-    {
-        field: 'cuero',
-        width: 150,
-        headerName: 'Cuero',
-    },
-    {
-        field: 'camionPartida',
-        width: 150,
-        headerName: 'Camion/Partida',
-    },
-    {
-        field: 'kg',
-        width: 150,
-        headerName: 'KG',
-    },
-    {
-        field: 'piezas',
-        width: 150,
-        headerName: 'Piezas',
-    },
-    {
-        field: 'material',
-        width: 150,
-        headerName: 'Material',
-    },
-    {
-        field: 'calibre',
-        width: 150,
-        headerName: 'Calibre',
-    },
-    {
-        field: 'linea',
-        width: 150,
-        headerName: 'Linea',
-    },
-    {
-        field: 'color',
-        width: 150,
-        headerName: 'Color',
-    },
-    {
-        field: 'fechaSecado',
-        width: 150,
-        headerName: 'Fecha Secado',
-    },
-    {
-        field: 'korona',
-        width: 150,
-        headerName: 'Korona',
-        editable: true
-    },
-    {
-        field: 'engraseSeco',
-        width: 150,
-        headerName: 'Engrase Seco',
-        editable: true
-    },
-    {
-        field: 'escurrir',
-        width: 150,
-        headerName: 'Escurrir',
-        editable: true
-    },
-    {
-        field: 'desvenado',
-        width: 150,
-        headerName: 'Desvenado',
-        editable: true
-    },
-    {
-        field: 'bauce',
-        width: 150,
-        headerName: 'Bauce',
-        editable: true
-    },
-    {
-        field: 'vacio',
-        width: 150,
-        headerName: 'Vacio',
-        editable: true
-    },
-    {
-        field: 'taic',
-        width: 150,
-        headerName: 'Taic',
-        editable: true
-    },
-    {
-        field: 'aereo',
-        width: 150,
-        headerName: 'Aereo',
-        editable: true
-    },
-    {
-        field: 'toggling',
-        width: 150,
-        headerName: 'Toggling',
-        editable: true
-    },
-    {
-        field: 'ablandado',
-        width: 150,
-        headerName: 'Ablandado',
-        editable: true
-    },
-    {
-        field: 'pulido',
-        width: 150,
-        headerName: 'Pulido',
-        editable: true
-    },
-    {
-        field: 'abatanado',
-        width: 150,
-        headerName: 'Abatanado',
-        editable: true
-    },
-    {
-        field: 'vacio2',
-        width: 150,
-        headerName: 'Vacio',
-        editable: true
-    },
-    {
-        field: 'pistolas',
-        width: 150,
-        headerName: 'Pistolas',
-        editable: true
-    },
-    {
-        field: 'roller',
-        width: 150,
-        headerName: 'Roller',
-        editable: true
-    },
-    {
-        field: 'finilux',
-        width: 150,
-        headerName: 'Finilux',
-        editable: true
-    },
-    {
-        field: 'rotoprex',
-        width: 150,
-        headerName: 'Rotoprex',
-        editable: true
-    },
-    {
-        field: 'partido',
-        width: 150,
-        headerName: 'Partido',
-        editable: true
-    },
-    {
-        field: 'grabado',
-        width: 150,
-        headerName: 'Grabado',
-        editable: true
-    },
-    {
-        field: 'envioPlanta',
-        width: 150,
-        headerName: 'Envio Planta',
-        editable: true
-    },
-    {
-        field: 'fechaFactura',
-        width: 150,
-        headerName: 'Fecha Factura',
-        editable: true
-    },
-    {
-        field: 'numeroFactura',
-        width: 150,
-        headerName: 'Numero Factura',
-        editable: true
-    }
-];
-
 export default function Engrases() {
     const [rows, setRows] = useState([]);
-    const [open, setOpen] = React.useState(false);
     const [openNew, setOpenNew] = React.useState(false);
-    const [column, setColumn] = React.useState('');
-    const [columnValue, setColumnValue] = React.useState('');
-    const [engraseId, setEngraseId] = React.useState(0);
 
     const [fechaEngrase, setFechaEngrase] = React.useState('');
     const [nCarga, setNCarga] = React.useState('');
@@ -265,29 +62,12 @@ export default function Engrases() {
         });
     }, [])
 
-    const handleClickOpen = (id) => {
-        setOpen(true);
-        setEngraseId(id);
-    };
-
     const handleOpenNew = () => {
         setOpenNew(true);
     };
 
-    const handleClose = () => {
-        setOpen(false);
-    };
-
     const handleCloseNew = () => {
         setOpenNew(false);
-    };
-
-    const handleColumnChange = (event) => {
-        setColumn(event.target.value);
-    };
-
-    const handleColumnValueChange = (event) => {
-        setColumnValue(event.target.value);
     };
 
     const handleFechaEngraseChange = (event) => {
@@ -430,12 +210,15 @@ export default function Engrases() {
             column: value,
             value: event.target.value
         }
+        if (data.value === '') {
+            data.value = null;
+            // console.log(data.value);
+        }
         // console.log(data);
         EngrasesService.engraseUpdate(data).then(response => {
             if (response.status === 200) {
                 console.log(response);
                 console.log('simon')
-                setOpen(false);
             } else {
                 console.log('nel')
             }
@@ -490,6 +273,233 @@ export default function Engrases() {
         })
     }
 
+    const headCells = [
+        {
+            field: 'id',
+            width: 150,
+            headerName: 'Id',
+        },
+        {
+            field: 'fechaEngrase',
+            width: 150,
+            headerName: 'Fecha Engrase',
+        },
+        {
+            field: 'nCarga',
+            width: 150,
+            headerName: 'Numero Carga',
+        },
+        {
+            field: 'cuero',
+            width: 150,
+            headerName: 'Cuero',
+        },
+        {
+            field: 'camionPartida',
+            width: 150,
+            headerName: 'Camion/Partida',
+        },
+        {
+            field: 'kg',
+            width: 150,
+            headerName: 'KG',
+        },
+        {
+            field: 'piezas',
+            width: 150,
+            headerName: 'Piezas',
+        },
+        {
+            field: 'material',
+            width: 150,
+            headerName: 'Material',
+        },
+        {
+            field: 'calibre',
+            width: 150,
+            headerName: 'Calibre',
+        },
+        {
+            field: 'linea',
+            width: 150,
+            headerName: 'Linea',
+        },
+        {
+            field: 'color',
+            width: 150,
+            headerName: 'Color',
+        },
+        {
+            field: 'fechaSecado',
+            width: 150,
+            headerName: 'Fecha Secado',
+        },
+        {
+            field: 'korona',
+            width: 150,
+            headerName: 'Korona',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'engraseSeco',
+            width: 150,
+            headerName: 'Engrase Seco',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'escurrir',
+            width: 150,
+            headerName: 'Escurrir',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'desvenado',
+            width: 150,
+            headerName: 'Desvenado',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'bauce',
+            width: 150,
+            headerName: 'Bauce',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'vacio',
+            width: 150,
+            headerName: 'Vacio',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'taic',
+            width: 150,
+            headerName: 'Taic',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'aereo',
+            width: 150,
+            headerName: 'Aereo',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'toggling',
+            width: 150,
+            headerName: 'Toggling',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'ablandado',
+            width: 150,
+            headerName: 'Ablandado',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'pulido',
+            width: 150,
+            headerName: 'Pulido',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'abatanado',
+            width: 150,
+            headerName: 'Abatanado',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'vacio2',
+            width: 150,
+            headerName: 'Vacio',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'pistolas',
+            width: 150,
+            headerName: 'Pistolas',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'roller',
+            width: 150,
+            headerName: 'Roller',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'finilux',
+            width: 150,
+            headerName: 'Finilux',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'rotoprex',
+            width: 150,
+            headerName: 'Rotoprex',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'partido',
+            width: 150,
+            headerName: 'Partido',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'grabado',
+            width: 150,
+            headerName: 'Grabado',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'envioPlanta',
+            width: 150,
+            headerName: 'Envio Planta',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'fechaFactura',
+            width: 150,
+            headerName: 'Fecha Factura',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'numeroFactura',
+            width: 150,
+            headerName: 'Numero Factura',
+            valueGetter: handleNullValue,
+            editable: true
+        }
+    ];
+
+    function handleNullValue(params) {
+        // console.log(params)
+        let name = params.field;
+        if (params.row[name] === 'null') {
+            return ('');
+        } else {
+            return (params.row[name]);
+        }
+    }
+
     return (
         <>
             <Box sx={{ height: 500, width: '100%' }}>
@@ -503,49 +513,6 @@ export default function Engrases() {
                     }} />
             </Box>
             <Button variant="contained" onClick={handleOpenNew}>Nuevo Engrase</Button>
-            <Dialog open={open} onClose={handleClose} >
-                <DialogTitle>Editar informacion de engrase</DialogTitle>
-                <DialogContent >
-                    {/* {() => handleAlert(success, error)} */}
-                    <DialogContentText>
-                        Elige la columna que quieres editar
-                    </DialogContentText>
-                    <List>
-                        {/* <ListItem>
-                            <FormControl required margin='dense' sx={{ width: '100%' }}>
-                                <InputLabel id="demo-simple-select-label">Name</InputLabel>
-                                <Select
-                                    labelId="demo-simple-select-label"
-                                    id="demo-simple-select"
-                                    value={column}
-                                    label="Column"
-                                    onChange={handleColumnChange}
-                                >
-                                    {engrasesColumns.map((column) => (
-                                        <MenuItem value={column.id}>{column.label}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </ListItem> */}
-                        <ListItem>
-                            <TextField
-                                autoFocus
-                                margin="dense"
-                                id="columnValue"
-                                label="Valor"
-                                type="text"
-                                variant="standard"
-                                onChange={handleColumnValueChange}
-                            />
-                        </ListItem>
-                    </List>
-                    {/* {error ? <Alert severity='error'>Something went wrong</Alert> : <></>} */}
-                </DialogContent>
-                <DialogActions>
-                    <Button variant="contained" onClick={updateEngrase}>Accept</Button>
-                    <Button variant="contained" onClick={handleClose}>Cancel</Button>
-                </DialogActions>
-            </Dialog>
             <Dialog open={openNew} onClose={handleCloseNew} >
                 <DialogTitle>Nuevo engrase</DialogTitle>
                 <DialogContent >

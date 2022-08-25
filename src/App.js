@@ -24,6 +24,11 @@ function TabPanel(props) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
+      {/* {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )} */}
       <div style={{ display: value === index ? 'block' : 'none' }}>
         <Box sx={{ p: 3 }}>
           <Typography>{children}</Typography>

@@ -20,58 +20,7 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import StockService from '../services/StockService';
 import InOutService from '../services/InOutService';
 
-const headCells = [
-    {
-        field: 'id',
-        width: 100,
-        headerName: 'Id',
-    },
-    {
-        field: 'pName',
-        width: 300,
-        headerName: 'Name',
-    },
-    {
-        field: 'producer',
-        width: 150,
-        headerName: 'Producer',
-    },
-    {
-        field: 'presentation',
-        width: 150,
-        headerName: 'Presentation',
-    },
-    {
-        field: 'qty',
-        width: 100,
-        headerName: 'Amount',
-    },
-    {
-        field: 'weight',
-        width: 100,
-        headerName: 'Weight',
-    },
-    {
-        field: 'kg',
-        width: 100,
-        headerName: 'KG',
-    },
-    {
-        field: 'price',
-        width: 100,
-        headerName: 'Price',
-    },
-    {
-        field: 'total',
-        width: 100,
-        headerName: 'Total',
-    },
-    {
-        field: 'currency',
-        width: 100,
-        headerName: 'Currency',
-    }
-];
+
 
 export default function Stock() {
     const [rows, setRows] = useState([]);
@@ -84,6 +33,60 @@ export default function Stock() {
     const [weight, setWeight] = React.useState(0);
     const [price, setPrice] = React.useState(0);
     const [currency, setCurrency] = React.useState('');
+
+    const headCells = [
+        {
+            field: 'id',
+            width: 100,
+            headerName: 'Id',
+        },
+        {
+            field: 'pName',
+            width: 300,
+            headerName: 'Name',
+        },
+        {
+            field: 'producer',
+            width: 150,
+            headerName: 'Producer',
+        },
+        {
+            field: 'presentation',
+            width: 150,
+            headerName: 'Presentation',
+        },
+        {
+            field: 'qty',
+            width: 100,
+            headerName: 'Amount',
+        },
+        {
+            field: 'weight',
+            width: 100,
+            headerName: 'Weight',
+        },
+        {
+            field: 'kg',
+            width: 100,
+            headerName: 'KG',
+        },
+        {
+            field: 'price',
+            width: 100,
+            headerName: 'Price',
+        },
+        {
+            field: 'total',
+            width: 100,
+            headerName: 'Total',
+            valueGetter: getTotal
+        },
+        {
+            field: 'currency',
+            width: 100,
+            headerName: 'Currency',
+        }
+    ];
 
     useEffect((rows) => {
         StockService.getStock().then(response => {
@@ -191,6 +194,10 @@ export default function Stock() {
                 console.log('nel')
             }
         })
+    }
+
+    function getTotal(params) {
+        return (params.row.kg * params.row.price);
     }
 
     return (

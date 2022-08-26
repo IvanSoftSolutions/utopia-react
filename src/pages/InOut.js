@@ -1,11 +1,6 @@
 import React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useState, useEffect } from 'react';
 
 import InOutService from '../services/InOutService';
@@ -16,39 +11,58 @@ export default function InOut() {
     useEffect(() => {
         InOutService.getInOuts().then(response => {
             if (response.status === 200) {
-                // console.log(response.data);
+                console.log(response.data);
                 setRows(response.data);
             }
         });
     }, [])
 
+    const headCells = [
+        {
+            field: 'date',
+            width: 150,
+            headerName: 'Date',
+        },
+        {
+            field: 'pName',
+            width: 250,
+            headerName: 'Name',
+        },
+        {
+            field: 'qty',
+            width: 100,
+            headerName: 'Quantity',
+        },
+        {
+            field: 'presentation',
+            width: 100,
+            headerName: 'Presentation',
+        },
+        {
+            field: 'weight',
+            width: 100,
+            headerName: 'Weight',
+        },
+        {
+            field: 'total',
+            width: 100,
+            headerName: 'Total',
+            valueGetter: getTotal
+        },
+        {
+            field: 'inOrOut',
+            width: 100,
+            headerName: 'In/Out',
+        }
+    ]
+
+    function getTotal(params) {
+        return (params.row.qty * params.row.weight);
+    }
+
     return (
-        <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Date</TableCell>
-                        <TableCell>Name</TableCell>
-                        <TableCell>Quantity</TableCell>
-                        <TableCell>InOrOut</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {rows.map((row) => (
-                        <TableRow
-                            key={row.id}
-                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                        >
-                            <TableCell component="th" scope="row">
-                                {row.date}
-                            </TableCell>
-                            <TableCell>{row.pName}</TableCell>
-                            <TableCell>{row.qty}</TableCell>
-                            <TableCell>{row.inOrOut}</TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+        <Box sx={{ height: 500, width: '100%' }}>
+            <DataGrid rows={rows} columns={headCells} components={{ Toolbar: GridToolbar }} />
+        </Box>
     )
 }

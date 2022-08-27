@@ -1,4 +1,5 @@
 import React from 'react';
+import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -17,6 +18,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { useState, useEffect } from 'react';
+import { DataGrid, GridToolbar, GRID_CHECKBOX_SELECTION_COL_DEF } from '@mui/x-data-grid';
 
 import ShipmentService from '../services/ShipmentService';
 
@@ -131,41 +133,71 @@ export default function Shipment() {
         setOpenShipment(false);
     };
 
+    function renderShipped(params) {
+        return (
+            <Checkbox disabled={Boolean(params.row.shipped)} defaultChecked color="default" />
+        )
+    }
+
+    function renderArrived(params) {
+        return (
+            <Checkbox disabled={Boolean(params.row.received)} checked={Boolean(params.row.received)} onChange={() => handleClickOpenDoA(params.row.id)} color="default" />
+        )
+    }
+
+    const headCells = [
+        {
+            field: 'id',
+            width: 50,
+            headerName: 'Id',
+        },
+        {
+            field: 'sNumber',
+            width: 150,
+            headerName: 'Serial Number',
+        },
+        {
+            field: 'nFactura',
+            width: 150,
+            headerName: 'Numero de Factura',
+        },
+        {
+            field: 'details',
+            width: 250,
+            headerName: 'Details',
+        },
+        {
+            field: 'shipped',
+            headerName: 'Shipped',
+            renderCell: renderShipped
+        },
+        {
+            field: 'shipDate',
+            width: 150,
+            headerName: 'Shipping Date',
+        },
+        {
+            field: 'received',
+            headerName: 'Received',
+            renderCell: renderArrived
+        },
+        {
+            field: 'arriveDate',
+            width: 150,
+            headerName: 'Date of Arrival',
+        },
+    ]
+
     return (
         <>
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} size="small" aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Id</TableCell>
-                            <TableCell>Serial Number</TableCell>
-                            <TableCell>Numero de Factura</TableCell>
-                            <TableCell>Details</TableCell>
-                            <TableCell>Shipped</TableCell>
-                            <TableCell>Shipping Date</TableCell>
-                            <TableCell>Received</TableCell>
-                            <TableCell>Date of Arrival</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {rows.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
-                                <TableCell component="th" scope="row">{row.id}</TableCell>
-                                <TableCell>{row.sNumber}</TableCell>
-                                <TableCell>{row.nFactura}</TableCell>
-                                <TableCell>{row.details}</TableCell>
-                                <Checkbox disabled={Boolean(row.shipped)} defaultChecked color="default" />
-                                <TableCell>{row.shipDate}</TableCell>
-                                <Checkbox disabled={Boolean(row.received)} checked={Boolean(row.received)} onChange={() => handleClickOpenDoA(row.id)} color="default" />
-                                <TableCell>{row.arriveDate}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+            <Box sx={{ height: 500, width: '100%' }}>
+                <DataGrid
+                    rows={rows}
+                    columns={headCells}
+                    components={{ Toolbar: GridToolbar }}
+                    disableSelectionOnClick
+                />
+            </Box>
             <Button variant="contained" onClick={handleOpenShipment} >Add shipment</Button>
             <Dialog open={openShipment} onClose={handleCloseShipment}>
                 <DialogTitle>New Shipment</DialogTitle>

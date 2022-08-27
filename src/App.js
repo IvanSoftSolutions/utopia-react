@@ -12,6 +12,10 @@ import InOut from './pages/InOut';
 import Shipment from './pages/Shipment';
 import HidesInv from './pages/HidesInv';
 import Engrases from './pages/Engrases';
+import Sales from './pages/Sales';
+import ConceptosVentas from './pages/ConceptosVentas';
+import Maquilas from './pages/Maquilas';
+import ConceptosMaquilas from './pages/ConceptosMaquilas';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -57,6 +61,7 @@ export default function BasicTabs() {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+    setNestedValue(0);
   };
 
   const handleNestedChange = (event, newValue) => {
@@ -71,6 +76,8 @@ export default function BasicTabs() {
           <Tab label="Chemicals" {...a11yProps(1)} />
           <Tab label="Hides Inventory" {...a11yProps(2)} />
           <Tab label="Shipment" {...a11yProps(3)} />
+          <Tab label="Ventas" {...a11yProps(4)} />
+          <Tab label="Maquilas" {...a11yProps(5)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -114,6 +121,38 @@ export default function BasicTabs() {
       </TabPanel>
       <TabPanel value={value} index={3}>
         <Shipment />
+      </TabPanel>
+      <TabPanel value={value} index={4}>
+        <Box sx={{ width: '100%' }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={nestedValue} onChange={handleNestedChange} aria-label="basic tabs example">
+              <Tab label="Ventas" {...a11yProps(0)} />
+              <Tab label="Conceptos" {...a11yProps(1)} />
+            </Tabs>
+          </Box>
+          <TabPanel value={nestedValue} index={0}>
+            <Sales />
+          </TabPanel>
+          <TabPanel value={nestedValue} index={1}>
+            <ConceptosVentas />
+          </TabPanel>
+        </Box>
+      </TabPanel>
+      <TabPanel value={value} index={5}>
+        <Box sx={{ width: '100%' }}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs value={nestedValue} onChange={handleNestedChange} aria-label="basic tabs example">
+              <Tab label="Ventas" {...a11yProps(0)} />
+              <Tab label="Conceptos" {...a11yProps(1)} />
+            </Tabs>
+          </Box>
+          <TabPanel value={nestedValue} index={0}>
+            <Maquilas />
+          </TabPanel>
+          <TabPanel value={nestedValue} index={1}>
+            <ConceptosMaquilas />
+          </TabPanel>
+        </Box>
       </TabPanel>
     </Box>
   );

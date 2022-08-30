@@ -39,8 +39,10 @@ export default function Formulas() {
     const [colorRows, setColorRows] = React.useState([]);
     const [palletRows, setPalletRows] = React.useState([]);
     const [open, setOpen] = React.useState(false);
+    const [openLogin, setOpenLogin] = React.useState(true);
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
+    const [errorLogin, setErrorLogin] = React.useState(false);
     const [axiosError, setAxiosError] = React.useState(false);
     const [stockError, setStockError] = React.useState(false);
     const [regex, setRegex] = React.useState(false);
@@ -79,6 +81,22 @@ export default function Formulas() {
         pass: password
     };
 
+    function userLogin(userData) {
+        UserServices.login(userData).then(response => {
+            if (response.status === 200) {
+                setUser('');
+                setPassword('');
+                setErrorLogin(false);
+                handleCloseLogin()
+            }
+        }).catch(function (error) {
+            if (error.response) {
+                setErrorLogin(true);
+                // console.log(error.response.data)
+            }
+        })
+    }
+
     function userAuth(userData) {
         UserServices.login(userData).then(response => {
             if (response.status === 200) {
@@ -106,7 +124,7 @@ export default function Formulas() {
             if (error.response) {
                 setSuccess(false);
                 setError(true);
-                console.log(error.response.data)
+                // console.log(error.response.data)
             }
         })
     }
@@ -245,6 +263,11 @@ export default function Formulas() {
 
     const handleClose = () => {
         setOpen(false);
+
+    };
+
+    const handleCloseLogin = () => {
+        setOpenLogin(false);
     };
 
     const handleUserChange = (event) => {
@@ -527,6 +550,7 @@ export default function Formulas() {
                         }}>Accept</Button>
                     </DialogActions>
                 </Dialog>
+
             </div>
             {/* Table container */}
             <Box sx={{ height: 500, width: '100%' }}>
@@ -540,6 +564,50 @@ export default function Formulas() {
                     hideFooterSelectedRowCount
                 />
             </Box>
+            <Dialog
+                open={openLogin}
+            // onClose={handleClose}
+            // disableEscapeKeyDown
+            >
+                <DialogTitle>Login</DialogTitle>
+                <DialogContent>
+                    {/* {() => handleAlert(success, error)} */}
+                    <DialogContentText>
+                        Introduce User and Password to login
+                    </DialogContentText>
+                    <div>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="user"
+                            label="User"
+                            type="email"
+                            variant="standard"
+                            onChange={handleUserChange}
+                        />
+                    </div>
+                    <div>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            id="password"
+                            label="Password"
+                            type="password"
+                            variant="standard"
+                            onChange={handlePasswordChange}
+                        />
+                    </div>
+                    <div>
+                        {errorLogin ? <Alert severity='error'>Incorrect user or password</Alert> : <></>}
+                    </div>
+                </DialogContent>
+                <DialogActions>
+                    {/* <Button onClick={handleCloseLogin}>Cancel</Button> */}
+                    <Button onClick={() => {
+                        userLogin(userData);
+                    }}>Accept</Button>
+                </DialogActions>
+            </Dialog>
         </>
     )
 }

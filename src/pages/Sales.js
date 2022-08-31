@@ -177,7 +177,7 @@ export default function Sales() {
         },
         {
             field: 'client',
-            width: 150,
+            width: 200,
             headerName: 'Client',
             valueGetter: handleNullValue,
             editable: true

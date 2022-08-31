@@ -165,7 +165,7 @@ export default function Maquilas() {
         },
         {
             field: 'client',
-            width: 150,
+            width: 250,
             headerName: 'Client',
             valueGetter: handleNullValue,
             editable: true

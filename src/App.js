@@ -9,13 +9,14 @@ import Formulas from './pages/Formulas';
 import LogReport from './pages/LogReport';
 import Stock from './pages/Stock';
 import InOut from './pages/InOut';
-import Shipment from './pages/Shipment';
+// import Shipment from './pages/Shipment';
 import HidesInv from './pages/HidesInv';
 import Engrases from './pages/Engrases';
 import Sales from './pages/Sales';
 import ConceptosVentas from './pages/ConceptosVentas';
 import Maquilas from './pages/Maquilas';
 import ConceptosMaquilas from './pages/ConceptosMaquilas';
+import Imports from './pages/Imports';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -75,7 +76,7 @@ export default function BasicTabs() {
           <Tab label="Formulas" {...a11yProps(0)} />
           <Tab label="Chemicals" {...a11yProps(1)} />
           <Tab label="Hides Inventory" {...a11yProps(2)} />
-          <Tab label="Shipment" {...a11yProps(3)} />
+          <Tab label="Imports" {...a11yProps(3)} />
           <Tab label="Ventas" {...a11yProps(4)} />
           <Tab label="Maquilas" {...a11yProps(5)} />
         </Tabs>
@@ -120,7 +121,7 @@ export default function BasicTabs() {
         <HidesInv />
       </TabPanel>
       <TabPanel value={value} index={3}>
-        <Shipment />
+        <Imports />
       </TabPanel>
       <TabPanel value={value} index={4}>
         <Box sx={{ width: '100%' }}>

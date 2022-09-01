@@ -44,26 +44,31 @@ export default function Stock() {
             field: 'pName',
             width: 300,
             headerName: 'Name',
+            editable: true
         },
         {
             field: 'producer',
             width: 150,
             headerName: 'Producer',
+            editable: true
         },
         {
             field: 'presentation',
             width: 150,
             headerName: 'Presentation',
+            editable: true
         },
         {
             field: 'qty',
             width: 100,
             headerName: 'Amount',
+            editable: true
         },
         {
             field: 'weight',
             width: 100,
             headerName: 'Weight',
+            editable: true
         },
         {
             field: 'kg',
@@ -74,6 +79,7 @@ export default function Stock() {
             field: 'price',
             width: 100,
             headerName: 'Price',
+            editable: true
         },
         {
             field: 'total',
@@ -85,6 +91,7 @@ export default function Stock() {
             field: 'currency',
             width: 100,
             headerName: 'Currency',
+            editable: true
         }
     ];
 
@@ -196,6 +203,29 @@ export default function Stock() {
         })
     }
 
+    function updateStock(params, event) {
+        let x = params.field;
+        let value = x.charAt(0).toUpperCase() + x.slice(1);
+        let data = {
+            id: params.id,
+            column: value,
+            value: event.target.value
+        }
+        if (data.value === '') {
+            data.value = null;
+            // console.log(data.value);
+        }
+        // console.log(data);
+        StockService.editStock(data).then(response => {
+            if (response.status === 200) {
+                console.log(response);
+                console.log('simon')
+            } else {
+                console.log('nel')
+            }
+        })
+    }
+
     function getTotal(params) {
         return (params.row.kg * params.row.price);
     }
@@ -203,7 +233,13 @@ export default function Stock() {
     return (
         <>
             <Box sx={{ height: 500, width: '100%' }}>
-                <DataGrid rows={rows.slice(2, -1)} columns={headCells} components={{ Toolbar: GridToolbar }} />
+                <DataGrid rows={rows.slice(2, -1)}
+                    columns={headCells}
+                    components={{ Toolbar: GridToolbar }}
+                    experimentalFeatures={{ newEditingApi: true }}
+                    onCellEditStop={(params, event) => {
+                        updateStock(params, event)
+                    }} />
             </Box>
             <div>
                 <Button variant='contained' onClick={handleOpenNew}>New chemical</Button>

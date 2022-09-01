@@ -17,6 +17,10 @@ class StockServices {
         return http.put(`/Stock/addStock?name=${data.name}&qty=${data.qty}`)
     }
 
+    editStock(data) {
+        return http.put(`/Stock/editStock?id=${data.id}&column=${data.column}&value=${data.value}`)
+    }
+
 }
 
 export default new StockServices();

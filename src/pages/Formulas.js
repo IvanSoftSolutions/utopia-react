@@ -39,7 +39,7 @@ export default function Formulas() {
     const [colorRows, setColorRows] = React.useState([]);
     const [palletRows, setPalletRows] = React.useState([]);
     const [open, setOpen] = React.useState(false);
-    const [openLogin, setOpenLogin] = React.useState(false);
+    const [openLogin, setOpenLogin] = React.useState(true);
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
     const [errorLogin, setErrorLogin] = React.useState(false);

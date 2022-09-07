@@ -1,7 +1,12 @@
 import React from 'react';
+import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Dialog from '@mui/material/Dialog';
@@ -13,9 +18,11 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { useState, useEffect } from 'react';
 
 import SalesService from '../services/SalesService';
+import SalesConceptosService from '../services/VentasConceptosService'
 
 export default function Sales() {
     const [rows, setRows] = useState([]);
+    const [conceptRows, setConceptRows] = useState([]);
     const [openNew, setOpenNew] = React.useState(false);
 
     const [folio, setFolio] = useState('');
@@ -27,17 +34,40 @@ export default function Sales() {
     const [wholeHideSides, setWholeHideSides] = useState('');
     const [quantity, setQuantity] = useState('');
     const [unit, setUnit] = useState('');
+    const [selection, setSelection] = useState('');
+    const [type, setType] = useState('');
     const [price, setPrice] = useState('');
     const [totalPesos, setTotalPesos] = useState('');
     const [exchangeRate, setExchangeRate] = useState('');
-    const [totalUSD, setTotalUSD] = useState('');
+    const [totalUSD, setTotalUSD] = useState('Total USD');
     const [observations, setObservations] = useState('');
+
+    const [errorFolio, setErrorFolio] = useState(false);
+    const [errorClient, setErrorClient] = useState(false);
+    const [errorInv, setErrorInv] = useState(false);
+    const [errorObs, setErrorObs] = useState(false);
+
+    const re_folio = /^REM-[0-9]+$|^FAC\s[A-Z]\d+$/;
+    const re_UpperCase = /^(([A-Z]+\s?)+)?$/;
+    const re_Digit = /^\d+$|N\/A/
+
+    const hideUnitsArr = ['N/A', 'PIECE', 'SIDE', 'WHOLE HIDE', 'DOUBLE SHOULDER', 'DOUBLE BUTT', 'DOUBLE BEND', 'BELLY'];
+    const unitsArr = ['N/A', 'DM', 'SQFT', 'KG']
+    const selectionArr = ['N/A', 'TR', 'TR1', 'TR2', 'TR3', 'TR4', 'OFF SHAPE', 'CONSERVATION PROBLEM'];
+    const typeArr = ['SMALL PACKER', 'PACKER', 'BULL', 'HEAVY NATIVE STEER', 'DAIRY COW', 'COLORADO STEER', 'DEER SKIN'];
 
     useEffect((rows) => {
         SalesService.getSales().then(response => {
             if (response.status === 200) {
                 console.log(response.data);
                 setRows(response.data);
+                console.log(rows);
+            }
+        });
+        SalesConceptosService.getSalesConceptos().then(response => {
+            if (response.status === 200) {
+                console.log(response.data);
+                setConceptRows(response.data);
                 console.log(rows);
             }
         });
@@ -49,6 +79,10 @@ export default function Sales() {
 
     const handleCloseNew = () => {
         setOpenNew(false);
+        setErrorClient(false);
+        setErrorFolio(false);
+        setErrorInv(false);
+        setErrorObs(false);
     };
 
     const handleFolioChange = (event) => {
@@ -87,6 +121,14 @@ export default function Sales() {
         setUnit(event.target.value);
     };
 
+    const handleSelectionChange = (event) => {
+        setSelection(event.target.value);
+    };
+
+    const handleTypeChange = (event) => {
+        setType(event.target.value);
+    };
+
     const handlePriceChange = (event) => {
         setPrice(event.target.value);
     };
@@ -97,6 +139,7 @@ export default function Sales() {
 
     const handleExchangeRateChange = (event) => {
         setExchangeRate(event.target.value);
+        setTotalUSD(totalPesos * event.target.value)
     };
 
     const handleTotalUSDChange = (event) => {
@@ -131,33 +174,55 @@ export default function Sales() {
     }
 
     function newSale() {
-        let data = {
-            folio: folio,
-            date: date,
-            client: client,
-            concept: concept,
-            inv: inv,
-            pieces: pieces,
-            wholeHideSides: wholeHideSides,
-            quantity: quantity,
-            unit: unit,
-            price: price,
-            totalPesos: totalPesos,
-            exchangeRate: exchangeRate,
-            totalUsd: totalUSD,
-            observations: observations
+        if (re_folio.test(folio) === false) {
+            setErrorFolio(true);
+        } else if (re_UpperCase.test(client) === false) {
+            setErrorFolio(false);
+            setErrorClient(true);
+        } else if (re_UpperCase.test(observations) === false) {
+            setErrorFolio(false);
+            setErrorClient(false);
+            setErrorObs(true);
+        } else if (re_Digit.test(inv) === false) {
+            setErrorFolio(false)
+            setErrorClient(false);
+            setErrorObs(false);
+            setErrorInv(true);
+        } else {
+            setErrorObs(false);
+            setErrorFolio(false);
+            setErrorInv(false);
+            setErrorClient(false);
+            let data = {
+                folio: folio,
+                date: date,
+                client: client,
+                concept: concept,
+                inv: inv,
+                pieces: pieces,
+                wholeHideSides: wholeHideSides,
+                quantity: quantity,
+                unit: unit,
+                selection: selection,
+                type: type,
+                price: price,
+                totalPesos: totalPesos,
+                exchangeRate: exchangeRate,
+                totalUsd: totalUSD,
+                observations: observations
 
-        }
-        SalesService.newSale(data).then(response => {
-            if (response.status === 200) {
-                console.log(response);
-                console.log('simon')
-                setOpenNew(false);
-            } else {
-                console.log(response);
-                console.log('nel')
             }
-        })
+            SalesService.newSale(data).then(response => {
+                if (response.status === 200) {
+                    console.log(response);
+                    console.log('simon')
+                    setOpenNew(false);
+                } else {
+                    console.log(response);
+                    console.log('nel')
+                }
+            })
+        }
     }
 
     const headCells = [
@@ -206,7 +271,7 @@ export default function Sales() {
         {
             field: 'wholeHideSides',
             width: 150,
-            headerName: 'Whole Hide/Sides',
+            headerName: 'Unit',
             valueGetter: handleNullValue,
             editable: true
         },
@@ -221,6 +286,20 @@ export default function Sales() {
             field: 'unit',
             width: 150,
             headerName: 'Unit',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'selection',
+            width: 150,
+            headerName: 'Selection',
+            valueGetter: handleNullValue,
+            editable: true
+        },
+        {
+            field: 'type',
+            width: 150,
+            headerName: 'Type',
             valueGetter: handleNullValue,
             editable: true
         },
@@ -288,7 +367,6 @@ export default function Sales() {
             <Dialog open={openNew} onClose={handleCloseNew} >
                 <DialogTitle>Nueva venta</DialogTitle>
                 <DialogContent >
-                    {/* {() => handleAlert(success, error)} */}
                     <DialogContentText>
                         Introducir informacion de venta
                     </DialogContentText>
@@ -304,7 +382,20 @@ export default function Sales() {
                                 <TextField autoFocus margin="dense" id="client" label="Client" type="text" variant="standard" onChange={handleClientChange} />
                             </ListItem>
                             <ListItem>
-                                <TextField autoFocus margin="dense" id="concept" label="Concept" type="text" variant="standard" onChange={handleConceptChange} />
+                                <FormControl required margin='dense' sx={{ width: '100%' }}>
+                                    <InputLabel id="demo-simple-select-label">Concept</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={concept}
+                                        label="Concept"
+                                        onChange={handleConceptChange}
+                                    >
+                                        {conceptRows.map((concept) => (
+                                            <MenuItem value={concept.concept}>{concept.concept}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                             </ListItem>
                             <ListItem>
                                 <TextField autoFocus margin="dense" id="inv" label="Inv" type="text" variant="standard" onChange={handleInvChange} />
@@ -313,15 +404,73 @@ export default function Sales() {
                                 <TextField autoFocus margin="dense" id="pieces" label="Pieces" type="number" variant="standard" onChange={handlePiecesChange} />
                             </ListItem>
                             <ListItem>
-                                <TextField autoFocus margin="dense" id="wholeHideSides" label="Whole Hide/Sides" type="text" variant="standard" onChange={handleWholeHideSidesChange} />
+                                <FormControl required margin='dense' sx={{ width: '100%' }}>
+                                    <InputLabel id="demo-simple-select-label">Unit</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={wholeHideSides}
+                                        label="Unit"
+                                        onChange={handleWholeHideSidesChange}
+                                    >
+                                        {hideUnitsArr.map((unit) => (
+                                            <MenuItem value={unit}>{unit}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </ListItem>
+                            <ListItem>
+                                <TextField autoFocus margin="dense" id="quantity" label="Quantity" type="number" variant="standard" onChange={handleQuantityChange} />
                             </ListItem>
                         </List>
                         <List>
                             <ListItem>
-                                <TextField autoFocus margin="dense" id="quantity" label="Quantity" type="number" variant="standard" onChange={handleQuantityChange} />
+                                <FormControl required margin='dense' sx={{ width: '100%' }}>
+                                    <InputLabel id="demo-simple-select-label">Unit</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={unit}
+                                        label="Unit"
+                                        onChange={handleUnitChange}
+                                    >
+                                        {unitsArr.map((unit) => (
+                                            <MenuItem value={unit}>{unit}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                             </ListItem>
                             <ListItem>
-                                <TextField autoFocus margin="dense" id="unit" label="Unit" type="text" variant="standard" onChange={handleUnitChange} />
+                                <FormControl required margin='dense' sx={{ width: '100%' }}>
+                                    <InputLabel id="demo-simple-select-label">Selection</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={selection}
+                                        label="Unit"
+                                        onChange={handleSelectionChange}
+                                    >
+                                        {selectionArr.map((selection) => (
+                                            <MenuItem value={selection}>{selection}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </ListItem>
+                            <ListItem>
+                                <FormControl required margin='dense' sx={{ width: '100%' }}>
+                                    <InputLabel id="demo-simple-select-label">Type</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={type}
+                                        label="Unit"
+                                        onChange={handleTypeChange}
+                                    >
+                                        {typeArr.map((type) => (
+                                            <MenuItem value={type}>{type}</MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                             </ListItem>
                             <ListItem>
                                 <TextField autoFocus margin="dense" id="price" label="Price" type="number" variant="standard" onChange={handlePriceChange} />
@@ -333,14 +482,17 @@ export default function Sales() {
                                 <TextField autoFocus margin="dense" id="exchangeRate" label="Exchange Rate" type="number" variant="standard" onChange={handleExchangeRateChange} />
                             </ListItem>
                             <ListItem>
-                                <TextField autoFocus margin="dense" id="totalUsd" label="Total USD" type="number" variant="standard" onChange={handleTotalUSDChange} />
+                                <TextField autoFocus disabled placeholder='Total USD' value={totalUSD} margin="dense" id="totalUsd" />
                             </ListItem>
                             <ListItem>
                                 <TextField autoFocus margin="dense" id="observations" label="Observations" type="text" variant="standard" onChange={handleObservationsChange} />
                             </ListItem>
                         </List>
                     </div>
-                    {/* {error ? <Alert severity='error'>Something went wrong</Alert> : <></>} */}
+                    {errorFolio ? <Alert severity='error'>El folio introducido no cumple con el formato "REM-123" / "FAC X123"</Alert> : <></>}
+                    {errorClient ? <Alert severity='error'>El cliente debe ser en MAYUSCULAS </Alert> : <></>}
+                    {errorInv ? <Alert severity='error'>El id de inventario debe ser digitos unicamente </Alert> : <></>}
+                    {errorObs ? <Alert severity='error'>Las observaciones deben ser en MAYUSCULAS </Alert> : <></>}
                 </DialogContent>
                 <DialogActions>
                     <Button variant="contained" onClick={newSale}>Accept</Button>
